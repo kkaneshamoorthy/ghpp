@@ -1,0 +1,10 @@
+* {
+    font-size: large;
+    font-weight:normal;color:#000000;letter-spacing:1pt;word-spacing:2pt;font-size:17px;text-align:left;font-family:georgia, serif;line-height:2;
+
+
+}
+
+#btn-add-basket {
+    cursor: pointer;
+}
