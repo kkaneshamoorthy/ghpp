@@ -1,13 +1,20 @@
 from django.shortcuts import render
 from frontend.models import Product
 from frontend.models import Category
+from frontend.models import ProductExtras
+from frontend.models import Extras
 from django.http import HttpResponseRedirect, HttpResponse, Http404, HttpResponseBadRequest
 from .serializers import ProductSerializer
 from .serializers import CategorySerializer
+from .serializers import ProductExtrasSerializer
+from .serializers import ExtraSerializer
 import json
 
 # Create your views here.
 def index(request):
+    if 'basket' not in request.session:
+        request.session['basket'] = {}
+
     return render(request, 'website/index.html')
 
 # Create your views here.
@@ -33,6 +40,19 @@ def get_product_given_category(request, category):
     except Product.DoesNotExist:
         raise Http404
 
+def get_product_extra(request, productId):
+    try:
+        productExtras = ProductExtras.objects.filter(product_id=productId)
+        extraResult = []
+        for product in productExtras:
+            extras = Extras.objects.filter(id=product.extra_id)
+            extraSerializer = ExtraSerializer(extras, many=True)
+            extraResult += json.dumps(extraSerializer.data)
+
+        return HttpResponse(extraResult, content_type="application/json")
+    except ProductExtras.DoesNotExist:
+        raise Http404
+
 def product(request, id):
     try:
         product = Product.objects.get(product_id=id)
@@ -40,3 +60,15 @@ def product(request, id):
         return render(request, 'website/menu.html', context)
     except Product.DoesNotExist:
         raise Http404
+
+def add_product(request):
+    if (request.method == 'POST'):
+        product_id = request.POST.get("product_id")
+        extras_id = request.POST.get("extras_id")
+        basket = request.session['basket']
+
+        basket[product_id] = extras_id
+
+        request.session['basket'] = basket
+        return HttpResponse("added product!")
+    raise Http404

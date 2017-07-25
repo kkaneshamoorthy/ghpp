@@ -14,9 +14,10 @@ class Product(models.Model):
     price = models.FloatField()
 
 class Extras(models.Model):
+    id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=200)
     price = models.FloatField()
 
 class ProductExtras(models.Model):
-    product_name = models.ForeignKey(Product, on_delete=models.CASCADE)
-    extra_name = models.ForeignKey(Extras, on_delete=models.CASCADE)
+    product_id = models.IntegerField(max_length=50)
+    extra_id = models.IntegerField(max_length=50)

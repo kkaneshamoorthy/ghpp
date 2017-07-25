@@ -2,6 +2,7 @@ from rest_framework import serializers
 from .models import Product
 from .models import Category
 from .models import Extras
+from .models import ProductExtras
 
 class CategorySerializer(serializers.Serializer):
     name = serializers.CharField(read_only=True)
@@ -17,5 +18,10 @@ class ProductSerializer(serializers.Serializer):
     price = serializers.FloatField()
 
 class ExtraSerializer(serializers.Serializer):
+    id = serializers.CharField()
     name = serializers.CharField(read_only=True)
     price = serializers.FloatField()
+
+class ProductExtrasSerializer(serializers.Serializer):
+    product_id = serializers.CharField()
+    extra_id = serializers.CharField()

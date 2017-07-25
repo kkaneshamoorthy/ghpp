@@ -2,7 +2,6 @@
 $(window).scroll(function() {
 
     var wScroll = $(this).scrollTop();
-    console.log(wScroll);
 
     if (wScroll >= 100) {
         $('#menuBar').css({

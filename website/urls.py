@@ -22,4 +22,6 @@ urlpatterns = [
     url(r'^$', views.index),
     url(r'^menu$', views.menu),
     url(r'^product/([^/]+)/$', views.get_product_given_category),
+    url(r'^productExtra/([0-9]+)/$', views.get_product_extra),
+    url(r'^addproduct/$', views.add_product),
 ]

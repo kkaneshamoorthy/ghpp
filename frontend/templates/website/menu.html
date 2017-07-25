@@ -27,6 +27,8 @@
 
 <body id="page-top" data-spy="scroll" data-target=".navbar-fixed-top">
 
+ {% csrf_token %}
+
     <!-- Navigation -->
     <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
         <div class="container">
@@ -49,9 +51,6 @@
                         <a class="page-scroll" href="#contact">Menu</a>
                     </li>
                     <li>
-                        <a class="page-scroll" href="#about">About Us</a>
-                    </li>
-                    <li>
                         <a class="page-scroll" href="#contact">Contact Us</a>
                     </li>
                     <li>
@@ -60,6 +59,7 @@
                 </ul>
 
                 <form class="navbar-form navbar-right" role="search">
+                    {% csrf_token %}
                   <div class="form-group">
                     <input type="text" class="form-control" placeholder="Search">
                   </div>
@@ -83,6 +83,16 @@
 
             <div id="menu_list" class="col-lg-9">
 
+{#                <script>#}
+{#                    var output = "";#}
+{#                    {% if category_list is not None%}#}
+{#                        output += "<a class='btn-add-basket' class='hvr-grow'> <span class='glyphicon glyphicon-plus-sign' aria-hidden='true'></span> </a>";#}
+{#                        output += "<a class='btn-add-basket' class='hvr-grow'> <span class='glyphicon glyphicon-plus-sign' aria-hidden='true'></span> </a>";#}
+{#                    {% endif %}#}
+{#                    var panel = document.getElementById("menu_list");#}
+{#                    panel.innerHTML = panel.innerHTML + output;#}
+{#                </script>#}
+
              <script>
              var output = "";
                 {% for category in category_list %}
@@ -100,6 +110,7 @@
 
                                           for (var i=0; i < data.length; i++) {
                                               var p = data[i];
+                                              var productID = p.id;
                                               console.log(p.id);
                                               output += "<strong>" + p["name"] + "</strong> <br>";
                                               output += p["description"] + "<br>";
@@ -110,10 +121,11 @@
                                               for (var j=0; j<portion.length; j++) {
                                                   var sizeData = portion[j].split(":");
 
+                                                  var productName = sizeData[0]+":"+sizeData[1];
+
                                                   output += "<td>" + sizeData[0 ] + "</td>";
                                                   output += "<td>£"+ sizeData[1];
-
-                                                  output+="<a id='btn-add-basket' value='productID="+p.id+":portion="+sizeData[0]+":price="+sizeData[1]+"' class='hvr-grow'> <span class='glyphicon glyphicon-plus-sign' aria-hidden='true'></span> </a> </td> </tr>";
+                                                  output += "<a class='btn-add-basket' id='" +productID+":"+productName+"' class='hvr-grow'> <span class='glyphicon glyphicon-plus-sign' aria-hidden='true'></span> </a> </td> </tr>";
                                               }
 
                                               output+="</table>";
@@ -127,8 +139,6 @@
                                     request.open("GET", "/product/{{ product.category }}/", true);
                                     request.send();
                                   });
-
-
                         {% endif %}
                     {% endfor %}
                 {% endfor %}
@@ -150,23 +160,82 @@
 {#    <script src="resources/js/jquery.easing.min.js"></script>#}
     <script src="{% static 'js/scrolling-nav.js' %}"></script>
     <script src="{% static 'js/slippry.min.js' %}"></script>
-
-
+    <script src="{% static 'js/bootbox.min.js' %}"></script>
 
     <script>
-        $("a").click(function () {
-                 console.log("ADDED");
-{#                 var quantity = $('#quantity').find(":selected").text();#}
-{#                 var id = {{ product_id }};#}
-{#                 $.ajax({#}
-{#                     url: "/api/addproduct/",#}
-{#                     type: 'POST',#}
-{#                     data: {'id': id, 'quantity': quantity},#}
-{#                     success: function (result) {#}
-{#                         location.reload();#}
-{#                     }#}
-{#                 });#}
+{#        var csrftoken = $.cookie('csrftoken');#}
+{##}
+{#        function csrfSafeMethod(method) {#}
+{#                    // these HTTP methods do not require CSRF protection#}
+{#                    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));#}
+{#                }#}
+
+{#        $.ajaxSetup({#}
+{#                    beforeSend: function(xhr, settings) {#}
+{#                        if (!csrfSafeMethod(settings.type) && !this.crossDomain) {#}
+{#                            xhr.setRequestHeader("X-CSRFToken", csrftoken);#}
+{#                        }#}
+{#                    }#}
+{#                });#}
+
+        var addToBasket = function(){
+            var extraToAdd = [];
+            $(".btn-add-basket").click(function () {
+                var productToAdd = this.id;
+
+                var productData = productToAdd.split(":");
+                var productId = productData[0];
+                var productName = productData[1];
+                var productPrice = productData[2];
+                dataOut = [];
+
+                var request = new XMLHttpRequest();
+                request.onreadystatechange = function() {
+                    if (this.readyState == 4) {
+                        var data = request.response.replace("][", ",");
+                        jsonData = JSON.parse(data);
+                        for (var i = 0; i < jsonData.length; i++) {
+                            var extraData = jsonData[i];
+                            id = extraData.id;
+                            extra_name = extraData.name;
+                            extra_price = extraData.price;
+
+                            dataOut.push({"text" : extra_name, "value" : id});
+                        }
+
+                        if (dataOut.length > 0) {
+                            bootbox.prompt({
+                                title: "Extra Options",
+                                inputType: 'checkbox',
+                                inputOptions: dataOut,
+                                callback: function (result) {
+                                    extraToAdd = result;
+                                    console.log(extraToAdd);
+                                    var csrf = $( '[name="csrfmiddlewaretoken"]' ).val();
+                                    console.log(csrf);
+
+                                     $.ajax({url: "/addproduct/",
+                                        type: 'POST',
+                                        data: {'product_id': '6', 'extras_id': extraToAdd, 'csrfmiddlewaretoken' : csrf},
+                                        success: function(result){
+                                            location.reload();
+                                            console.log("result");
+                                        }
+                                     });
+
+                                }
+                            });
+                        }
+                    }
+                };
+                request.open("GET", "/productExtra/"+productId+"/", true);
+                request.send();
+
              });
+
+        };
+
+        setTimeout(addToBasket, 1000);
     </script>
 
 
