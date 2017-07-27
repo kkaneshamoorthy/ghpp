@@ -8,3 +8,8 @@
 #btn-add-basket {
     cursor: pointer;
 }
+
+#checkout {
+    position: absolute;
+    right: 0px;
+}

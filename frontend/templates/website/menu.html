@@ -54,7 +54,7 @@
                         <a class="page-scroll" href="#contact">Contact Us</a>
                     </li>
                     <li>
-                        <a class="page-scroll" href="#contact"> My Order <span class="glyphicon glyphicon-shopping-cart"/> </a>
+                        <a class="page-scroll" href="{{ basket }}"> My Order <span class="glyphicon glyphicon-shopping-cart"/> </a>
                     </li>
                 </ul>
 
@@ -121,11 +121,11 @@
                                               for (var j=0; j<portion.length; j++) {
                                                   var sizeData = portion[j].split(":");
 
-                                                  var productName = sizeData[0]+":"+sizeData[1];
+                                                  var addButtonID = productID+":"+sizeData[0]+":"+sizeData[1];
 
                                                   output += "<td>" + sizeData[0 ] + "</td>";
                                                   output += "<td>£"+ sizeData[1];
-                                                  output += "<a class='btn-add-basket' id='" +productID+":"+productName+"' class='hvr-grow'> <span class='glyphicon glyphicon-plus-sign' aria-hidden='true'></span> </a> </td> </tr>";
+                                                  output += "<a class='btn-add-basket' id='"+addButtonID+"' class='hvr-grow'> <span class='glyphicon glyphicon-plus-sign' aria-hidden='true'></span> </a> </td> </tr>";
                                               }
 
                                               output+="</table>";
@@ -183,9 +183,11 @@
             $(".btn-add-basket").click(function () {
                 var productToAdd = this.id;
 
+                console.log(productToAdd);
+
                 var productData = productToAdd.split(":");
                 var productId = productData[0];
-                var productName = productData[1];
+                var productSubname = productData[1];
                 var productPrice = productData[2];
                 dataOut = [];
 
@@ -209,17 +211,25 @@
                                 inputType: 'checkbox',
                                 inputOptions: dataOut,
                                 callback: function (result) {
-                                    extraToAdd = result;
+                                    var extraToAdd = "";
+
+                                    for (var k=0; k<result.length; k++) {
+                                        extraToAdd += result[k];
+
+                                        if (k != result.length-1)
+                                            extraToAdd+=",";
+                                    }
+
                                     console.log(extraToAdd);
                                     var csrf = $( '[name="csrfmiddlewaretoken"]' ).val();
                                     console.log(csrf);
 
                                      $.ajax({url: "/addproduct/",
                                         type: 'POST',
-                                        data: {'product_id': '6', 'extras_id': extraToAdd, 'csrfmiddlewaretoken' : csrf},
+                                        data: {'product_id': productId+":"+productSubname+":"+productPrice+":"+productData[3]+extraToAdd, 'extras_id': extraToAdd, 'csrfmiddlewaretoken' : csrf},
                                         success: function(result){
-                                            location.reload();
-                                            console.log("result");
+{#                                            location.reload();#}
+                                            console.log("added successfully");
                                         }
                                      });
 

@@ -24,4 +24,6 @@ urlpatterns = [
     url(r'^product/([^/]+)/$', views.get_product_given_category),
     url(r'^productExtra/([0-9]+)/$', views.get_product_extra),
     url(r'^addproduct/$', views.add_product),
+    url(r'^basket/$', views.basket),
+    url(r'^resetBasket/$', views.reset_basket),
 ]

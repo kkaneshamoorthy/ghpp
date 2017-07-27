@@ -1,0 +1,278 @@
+{#{% load static %}#}
+{##}
+{#<!DOCTYPE html>#}
+{#<html lang="en">#}
+{#<head>#}
+{#    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">#}
+{#    <link rel="stylesheet" href="{% static 'css/main.css' %}">#}
+{#    <link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}">#}
+{#    <link rel="stylesheet" href="{% static 'css/basket.css' %}">#}
+{#    <link href="https://fonts.googleapis.com/css?family=Roboto:300" rel="stylesheet">#}
+{#    <link href="https://fonts.googleapis.com/css?family=Roboto+Condensed" rel="stylesheet">#}
+{#</head>#}
+{#<div id="navbar-bg">#}
+{#</div>#}
+{#<div id="basket-content">#}
+{#    <div>#}
+{#        {% if products %}#}
+{##}
+{##}
+{#        <div class="title bold">YOUR BASKET</div>#}
+{##}
+{##}
+{#        {% for product in products %}#}
+{#            <div id="{{ product.product.id }}" class="product-item">#}
+{#                <div class="product-img">#}
+{#                    <img src="{{ product.product.image_link }}">#}
+{#                </div>#}
+{#                <div class="product-details">#}
+{#                    <div class="product-text">#}
+{#                        <span>{{ product.product.name }}</span>#}
+{#                        <span class="product-price">£{{ product.product.price }}</span> <br/>#}
+{#                        {% for extra in product.extras %}#}
+{#                            <span> {{ extra.name }}</span>#}
+{#                            <span> {{ extra.price }}</span> <br/>#}
+{#                        {% endfor %}#}
+{#                        <span><a class="product-remove">REMOVE</a></span>#}
+{#                    </div>#}
+{#                </div>#}
+{#            </div>#}
+{#        {%  endfor %}#}
+{#        <hr>#}
+{#        <div id="total">TOTAL: £{{ total }}</div>#}
+{#        <br>#}
+{#            {% if account %}#}
+{#                <a href="/checkout" id="btn-checkout" class="hvr-float">CHECKOUT</a>#}
+{#            {% else %}#}
+{#                <hr>#}
+{#                <div class="log-in-block">#}
+{#                    <p >Please log in to checkout</p>#}
+{#                    <a id="btn-checkout" href="/account" class="hvr-float">SIGN-IN OR REGISTER</a>#}
+{#                </div>#}
+{#            {% endif%}#}
+{##}
+{#    {% else %}#}
+{#            <div class="title bold">BASKET IS EMPTY</div>#}
+{#    {% endif %}#}
+{#    </div>#}
+{##}
+{##}
+{#</div>#}
+{##}
+{#  <!-- jQuery -->#}
+{#    <script src="{% static '/js/jquery.js' %} "></script>#}
+{#    <script src="{% static '/js/jquery-3.1.1.min.js' %} "></script>#}
+{#    <script src="{% static '/js/jquery-ui.min.js' %} "></script>#}
+{##}
+{#    <!-- Bootstrap Core JavaScript -->#}
+{#    <script src={% static 'js/bootstrap.min.js' %}></script>#}
+{##}
+{#    <!-- Scrolling Nav JavaScript -->#}
+{#    <script src="resources/js/jquery.easing.min.js"></script>#}
+{#    <script src="{% static 'js/scrolling-nav.js' %}"></script>#}
+{#    <script src="{% static 'js/slippry.min.js' %}"></script>#}
+{#    <script src="{% static 'js/bootbox.min.js' %}"></script>#}
+{##}
+{#<script>#}
+{#    var csrftoken = $.cookie('csrftoken');#}
+{#                function csrfSafeMethod(method) {#}
+{#                    // these HTTP methods do not require CSRF protection#}
+{#                    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));#}
+{#                }#}
+{#                $.ajaxSetup({#}
+{#                    beforeSend: function(xhr, settings) {#}
+{#                        if (!csrfSafeMethod(settings.type) && !this.crossDomain) {#}
+{#                            xhr.setRequestHeader("X-CSRFToken", csrftoken);#}
+{#                        }#}
+{#                    }#}
+{#                });#}
+{#    $(document).ready(function() {#}
+{#        $(".select-quantity").change(function(){#}
+{#            var id = $(this).parent().parent().parent().parent().attr("id")#}
+{#            var quantity = $(this).find(":selected").val()#}
+{#            $.ajax({url: "/api/changequantity/",#}
+{#            type: 'POST',#}
+{#            data: {'id': id, 'quantity': quantity},#}
+{#            success: function(result){#}
+{#                location.reload();#}
+{#            }});#}
+{#        });#}
+{#        $(".product-remove").click(function(){#}
+{#            var id = $(this).parent().parent().parent().parent().attr("id")#}
+{#            $.ajax({url: "/api/changequantity/",#}
+{#            type: 'POST',#}
+{#            data: {'id': id, 'quantity': 0},#}
+{#            success: function(result){#}
+{#                location.reload();#}
+{#            }});#}
+{#        });#}
+{#    });#}
+{#</script>#}
+{#</body>#}
+{#</html>#}
+
+
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>My Basket</title>
+
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}"/>
+    <link rel="stylesheet" href="{% static 'css/scrolling-nav.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/main.css' %}"/>
+    <link rel="stylesheet" href="{% static 'css/hover-min.css' %}">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+    <script type="text/javascript" src="resources/js/script.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+</head>
+
+<body id="page-top" data-spy="scroll" data-target=".navbar-fixed-top">
+
+ {% csrf_token %}
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+        <div class="container">
+            <div class="navbar-header page-scroll">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand page-scroll" href="{{ index }}">Galley Hill Peri Peri</a>
+            </div>
+
+            <div class="collapse navbar-collapse navbar-ex1-collapse">
+                <ul class="nav navbar-nav">
+                    <li class="hidden">
+                        <a class="page-scroll" href="{{ index }}"></a>
+                    </li>
+                    <li>
+                        <a class="page-scroll" href="#contact">Menu</a>
+                    </li>
+                    <li>
+                        <a class="page-scroll" href="#contact">Contact Us</a>
+                    </li>
+                    <li>
+                        <a class="page-scroll" href="{{ basket }}"> My Basket <span class="glyphicon glyphicon-shopping-cart"/> </a>
+                    </li>
+                </ul>
+
+                <form class="navbar-form navbar-right" role="search">
+                    {% csrf_token %}
+                  <div class="form-group">
+                    <input type="text" class="form-control" placeholder="Search">
+                  </div>
+                  <button type="submit" class="btn btn-default">Search</button>
+                </form>
+            </div>
+        </div>
+    </nav>
+
+    <section id="menu" class="intro-section">
+    <div class="container">
+        <div id="menu_list" class="col-lg-9">
+            <div>
+                {% if products %}
+                    <div class="title bold">Your Basket</div>
+
+                    <table class='table'>
+                {% for product in products %}
+                    <tr>
+                        <div class="product-details">
+                            <div class="product-text">
+                                <td><span><strong>{{ product.product.name }} : {{ product.product_subname }}</strong></span> <br/>
+                                    Extras:
+                                    {% for extra in product.extras %}
+                                        <span> {{ extra.name }}</span>
+                                    {% endfor %}
+                                </td>
+                                <td><span class="product-price">£{{ product.price }}</span></td>
+                                <td><a id="product-remove" class='hvr-grow'><span class="glyphicon glyphicon-remove"/></a></td>
+                            </div>
+                        </div>
+                    </tr>
+                {%  endfor %}
+
+                <tr>
+                    <td> TOTAL: £{{ total }} </td>
+                    <td><button id="checkout" type="submit" class="btn btn-success btn-lg">Checkout</button></td>
+                </tr>
+
+            </table>
+
+                {% else %}
+                    <div class="title bold">BASKET IS EMPTY</div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    </section>
+
+  <!-- jQuery -->
+{#    <script src="{% static '/js/jquery.js' %} "></script>#}
+    <script src="{% static '/js/jquery-3.1.1.min.js' %} "></script>
+    <script src="{% static '/js/jquery-ui.min.js' %} "></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src={% static 'js/bootstrap.min.js' %}></script>
+
+    <!-- Scrolling Nav JavaScript -->
+{#    <script src="resources/js/jquery.easing.min.js"></script>#}
+    <script src="{% static 'js/scrolling-nav.js' %}"></script>
+    <script src="{% static 'js/slippry.min.js' %}"></script>
+    <script src="{% static 'js/bootbox.min.js' %}"></script>
+
+<script>
+{#    var csrftoken = $.cookie('csrftoken');#}
+{#                function csrfSafeMethod(method) {#}
+{#                    // these HTTP methods do not require CSRF protection#}
+{#                    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));#}
+{#                }#}
+{#                $.ajaxSetup({#}
+{#                    beforeSend: function(xhr, settings) {#}
+{#                        if (!csrfSafeMethod(settings.type) && !this.crossDomain) {#}
+{#                            xhr.setRequestHeader("X-CSRFToken", csrftoken);#}
+{#                        }#}
+{#                    }#}
+{#                });#}
+    $(document).ready(function() {
+{#        $(".select-quantity").change(function(){#}
+{#            var id = $(this).parent().parent().parent().parent().attr("id")#}
+{#            var quantity = $(this).find(":selected").val()#}
+{#            $.ajax({url: "/api/changequantity/",#}
+{#            type: 'POST',#}
+{#            data: {'id': id, 'quantity': quantity},#}
+{#            success: function(result){#}
+{#                location.reload();#}
+{#            }});#}
+{#        });#}
+{#        $("#product-remove").click(function(){#}
+{#            console.log("remove");#}
+{#            var id = $(this).parent().parent().parent().parent().attr("id");#}
+{#            $.ajax({url: "/api/changequantity/",#}
+{#            type: 'POST',#}
+{#            data: {'id': id, 'quantity': 0},#}
+{#            success: function(result){#}
+{#                location.reload();#}
+{#            }});#}
+{#        });#}
+    });
+</script>
+
+</body>
+</html>

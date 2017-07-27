@@ -64,11 +64,52 @@ def product(request, id):
 def add_product(request):
     if (request.method == 'POST'):
         product_id = request.POST.get("product_id")
-        extras_id = request.POST.get("extras_id")
-        basket = request.session['basket']
+        extras_id = request.POST.get("extras_id").split(",")
+        extraArr = []
 
-        basket[product_id] = extras_id
+        for value in extras_id:
+            extraArr.append(value)
+
+        basket = request.session['basket']
+        basket[product_id] = extraArr
 
         request.session['basket'] = basket
-        return HttpResponse("added product!")
+        return HttpResponse(json.dumps(basket))
     raise Http404
+
+
+def reset_basket(request):
+    request.session['basket'] = {}
+    return HttpResponse("basket resetted")
+
+def basket(request):
+    products = []
+    total = 0
+    basket = request.session['basket']
+
+    for key,value in basket.items():
+        productData = key.split(":")
+        product_id = int(productData[0])
+        product_subname = productData[1]
+        product_price = productData[2]
+        extraIds = value
+        extraTotal = 0
+        extraData = []
+        product = Product.objects.get(id=product_id) #get product
+
+        if extraIds[0] == '':
+            extraData = []
+        else:
+            for extraId in extraIds:
+                extra = Extras.objects.get(id=extraId)
+                extraData.append(extra)
+                extraTotal += extra.price
+
+        price = float(product.price)
+        productTotal = price + extraTotal+float(product_price)
+        products.append({'product': product, 'product_subname' : product_subname, 'price':productTotal, 'extras' : extraData})
+        total += productTotal
+
+    request.session['basket_total'] = total
+    context = {'products':products, 'total' : total}
+    return render(request, 'website/basket.html',context)
