@@ -26,4 +26,11 @@ urlpatterns = [
     url(r'^addproduct/$', views.add_product),
     url(r'^basket/$', views.basket),
     url(r'^resetBasket/$', views.reset_basket),
+    url(r'^remove/$', views.remove),
+    url(r'^view/$', views.view_basket),
+    url(r'^checkout/$', views.checkout),
+    url(r'^viewcheckout/$', views.view_checkout),
+    url(r'^checkout/1/$', views.checkout_delivery),
+    url(r'^checkout/2/$', views.checkout_payment),
+    url(r'^payment/$', views.payment),
 ]

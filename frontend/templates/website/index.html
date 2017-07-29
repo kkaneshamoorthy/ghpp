@@ -29,6 +29,7 @@
 
 <body id="page-top" data-spy="scroll" data-target=".navbar-fixed-top">
  {% csrf_token %}
+
     <!-- Navigation -->
     <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
         <div class="container">
@@ -39,30 +40,31 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand page-scroll" href="">Galley Hill Peri Peri</a>
+                <a class="navbar-brand page-scroll" href="/">Galley Hill Peri Peri</a>
             </div>
 
             <div class="collapse navbar-collapse navbar-ex1-collapse">
                 <ul class="nav navbar-nav">
                     <li class="hidden">
-                        <a class="page-scroll" href=""></a>
+                        <a class="page-scroll" href="/"></a>
                     </li>
                     <li>
-                        <a class="page-scroll" href="menu">Menu</a>
-                    </li>
-                    <li>
-                        <a class="page-scroll" href="#about">About Us</a>
+                        <a class="page-scroll" href="/menu">Menu</a>
                     </li>
                     <li>
                         <a class="page-scroll" href="#contact">Contact Us</a>
                     </li>
+                    <li>
+                        <a class="page-scroll" href="/basket"> My Basket <span class="glyphicon glyphicon-shopping-cart"/> </a>
+                    </li>
                 </ul>
 
                 <form class="navbar-form navbar-right" role="search">
+                    {% csrf_token %}
                   <div class="form-group">
                     <input type="text" class="form-control" placeholder="Search">
                   </div>
-                  <button type="submit" class="btn btn-default">Submit</button>
+                  <button type="submit" class="btn btn-default">Search</button>
                 </form>
             </div>
         </div>

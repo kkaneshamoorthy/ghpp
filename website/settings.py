@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
 import os
-
+import paypalrestsdk
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -38,7 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'frontend',
-    'rest_framework'
+    'rest_framework',
+    'paypalrestsdk'
 ]
 
 MIDDLEWARE = [
@@ -50,6 +51,11 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+paypalrestsdk.configure({
+  'mode': 'sandbox', #sandbox or live
+  'client_id': 'AW2mrMIZw9PPTCzk6LyS1Z-cxuEWsulynG7sxu_08JFfcXc1oic_oVjtyxhD3dSpaI0dy9v6ALw8Axvm',
+  'client_secret': 'EJYYS3HM_KYyVHlM-I0UPZM07u5J-h-aWtYFCDsK-3H-XEpPOXmll2IL4Nq6-nBRyImd-7KyMliT8x0K' })
 
 ROOT_URLCONF = 'website.urls'
 
