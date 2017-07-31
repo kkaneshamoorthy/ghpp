@@ -148,7 +148,44 @@ def checkout(request):
 
 def checkout_delivery(request):
     context = {}
+    products = []
+    total = 0
     request.session['checkout'] = {}
+    checkout = request.session['checkout']
+
+    basket = request.session['basket']
+
+    for key,value in basket.items():
+        productData = key.split(":")
+        product_id = int(productData[0])
+        product_subname = productData[1]
+        product_price = productData[2]
+        extraIds = value['extras']
+        quantity = value['quantity']
+        extraTotal = 0
+        extraData = []
+        product = Product.objects.get(id=product_id) #get product
+
+        if extraIds[0] == '':
+            extraData = []
+        else:
+            for extraId in extraIds:
+                extra = Extras.objects.get(id=extraId)
+                extraData.append(extra)
+                extraTotal += extra.price
+
+        price = float(product.price)
+        productTotal = price + extraTotal+float(product_price)
+        products.append({'product': product, 'product_subname' : product_subname, 'price':productTotal, 'extras' : extraData, 'product_id' : key, 'quantity' : quantity})
+        total += productTotal * quantity
+
+    checkout = {'total' : total}
+
+    request.session['checkout'] = checkout
+    request.session['basket_total'] = total
+
+    context = {'products': products, 'total': total}
+
     return render(request, 'website/checkout-delivery.html', context)
 
 def checkout_payment(request):
@@ -158,14 +195,32 @@ def checkout_payment(request):
         postcode = request.POST.get("postcode")
         city = request.POST.get("city")
         country = request.POST.get("country")
+        phone = request.POST.get("phone")
 
         checkout = request.session['checkout']
 
-        checkout['name'] = name
-        checkout['street'] = street
-        checkout['postcode'] = postcode
-        checkout['city'] = city
-        checkout['country'] = country
+        checkout = {'name' : name, 'street' : street, 'postcode' : postcode, 'city' : city, 'country' : country, 'phone' : phone, 'total': checkout}
+
+        request.session['checkout'] = checkout
+
+        return HttpResponse("saved")
+    raise Http404
+
+def save_payment(request):
+    if (request.method == 'POST'):
+        card_type = request.POST.get("card_type")
+        card_number = request.POST.get("card_number")
+        expiry_month = request.POST.get("expiry_month")
+        expiry_year = request.POST.get("expiry_year")
+        cvv = request.POST.get("cvv")
+        card_holdername = request.POST.get("card_holdername")
+
+        checkout = request.session['checkout']
+
+        payment = {'card_type': card_type, 'card_number': card_number, 'expiry_month': expiry_month, 'expiry_year': expiry_year,
+         'cvv': cvv, 'card_holdername': card_holdername}
+
+        checkout = {'payment' : payment, 'delivery' : checkout}
 
         request.session['checkout'] = checkout
 
@@ -176,46 +231,85 @@ def view_checkout(request):
     return HttpResponse(json.dumps(request.session['checkout']))
 
 def payment(request):
-    payment = Payment({
-      "intent": "sale",
-      "payer": {
-        "payment_method": "credit_card",
-        "funding_instruments": [{
-          "credit_card": {
-            "type": "visa",
-            "number": "4287997819811657",
-            "expire_month": "11",
-            "expire_year": "2018",
-            "cvv2": "874",
-            "first_name": "Joe",
-            "last_name": "Shopper",
-            "billing_address": {
-              "line1": "52 N Main ST",
-              "city": "Johnstown",
-              "state": "OH",
-              "postal_code": "43210",
-              "country_code": "US"
-            }
-          }
-        }]
-      },
-      "transactions": [{
-        "amount": {
-          "total": "7.47",
-          "currency": "USD"
-        },
-        "description": "This is the payment transaction description."
-      }]
-    })
+    context = {}
+    if (request.method == 'POST'):
+        checkout = request.session['checkout']
+        payment = checkout['payment']
+        delivery = checkout['delivery']
+        total = delivery['total']
+        #
+        # payment = Payment({
+        #   "intent": "sale",
+        #   "payer": {
+        #     "payment_method": "credit_card",
+        #     "funding_instruments": [{
+        #       "credit_card": {
+        #         "type": payment['card_type'],
+        #         "number": payment['card_number'],
+        #         "expire_month": payment['expiry_month'],
+        #         "expire_year": payment['expiry_year'],
+        #         "cvv2": payment['cvv'],
+        #         "first_name": "Joe",
+        #         "last_name": "Shopper",
+        #         "billing_address": {
+        #           "line1": "52 N Main ST",
+        #           "city": "Johnstown",
+        #           "state": "OH",
+        #           "postal_code": "43210",
+        #           "country_code": "US"
+        #         }
+        #       }
+        #     }]
+        #   },
+        #   "transactions": [{
+        #     "amount": {
+        #       "total": total,
+        #       "currency": "GBP"
+        #     },
+        #     "description": "This is the payment transaction description."
+        #   }]
+        # })
 
-    context = ""
+        payment = Payment({
+            "intent": "sale",
+            "payer": {
+                "payment_method": "credit_card",
+                "funding_instruments": [{
+                    "credit_card": {
+                        "type": payment['card_type'],
+                        "number": payment['card_number'],
+                        "expire_month": payment['expiry_month'],
+                        "expire_year": payment['expiry_year'],
+                        "cvv2": payment['cvv'],
+                        "first_name": "Joe",
+                        "last_name": "Shopper",
+                        "billing_address": {
+                            "line1": delivery['street'],#"52 N Main ST",
+                            "city": delivery['city'], #"Johnstown",
+                            "state": "OH",
+                            "postal_code": delivery['postcode'], #"43210",
+                            "country_code": "UK"
+                        }
+                    }
+                }]
+            },
+            "transactions": [{
+                "amount": {
+                    "total": total['total'],
+                    "currency": "USD"
+                },
+                "description": "This is the payment transaction description."
+            }]
+        })
 
-    # Create payment
-    if payment.create():
-        context = ("Payment[%s] created successfully" % (payment.id))
-    else:
-        # Display Error message
-        context = ("Error while creating payment:")
-        context = (payment.error)
+        context = ""
+
+        # Create payment
+        if payment.create():
+            context = ("Payment[%s] created successfully" % (payment.id))
+        else:
+            # Display Error message
+            context = ("Error while creating payment:")
+            context = (payment.error)
 
     return HttpResponse(json.dumps(context))

@@ -129,6 +129,12 @@
                                             <td><input name="country" type="text" class="placeholder-override-input" id="country" required autocomplete="off"></td>
                                         </div>
                                         </tr>
+                                        <tr>
+                                         <div class="placeholder-override-wrap">
+                                             <td><span class="placeholder-override-label">Phone number:</span></td>
+                                            <td><input name="phone-number" type="text" class="placeholder-override-input" id="phone-number" required autocomplete="off"></td>
+                                        </div>
+                                        </tr>
                                     </table>
                                     <button id="delivery_details_btn" class="btn btn-xs btn-primary" onclick="stepnext(2);" type="button"><i class="icon-next"></i> Next </button>
                                 </form>
@@ -176,19 +182,75 @@
                                     <tr>
                                     <div class="wizard-btn-container">
                                         <td><button class="btn btn-xs btn-primary" onclick="stepnext(1);" type="button"><i class="icon-next"></i> Back </button></td>
-                                        <td><button class="btn btn-xs btn-primary" onclick="stepnext(3);" type="button"><i class="icon-next"></i> Next </button></td>
+                                        <td><button id="payment_details_btn" class="btn btn-xs btn-primary" onclick="stepnext(3);" type="button"><i class="icon-next"></i> Next </button></td>
                                     </div>
                                     </tr>
                                 </table>
                             </div>
 
                             <div class="tab-pane fade padding20 " id="step-3" >
-                                <div class="row"> Confirmation </div>
-                                Total: <br/>
-                                Address: <br/>
-                                Payment Details: <br/>
-                                <button class="btn btn-xs btn-primary" onclick="stepnext(2);" type="button"><i class="icon-next"></i> Back </button>
-                                <a href="/payment"> <button id="payment_details_btn" class="btn btn-xs btn-success" onclick="stepnext(0);" type="button"><i class="icon-next"></i>Pay Now </button></a>
+                                <div class="row"> <h3 class="bold">CONFIRMATION</h3> </div>
+                                <div>
+                                {% if products %}
+                                    <table class='table'>
+                                {% for product in products %}
+                                    <tr>
+                                        <div class="product-details">
+                                            <div class="product-text">
+                                                <td><span><strong>{{ product.product.name }} : {{ product.product_subname }}</strong></span> <br/>
+                                                    Extras: <br/>
+                                                    {% for extra in product.extras %}
+                                                        <span> --- {{ extra.name }}</span> <br/>
+                                                    {% endfor %}
+                                                </td>
+                                                <td>Quantity: {{ product.quantity }}</td>
+                                                <td><span class="product-price">£{{ product.price }}</span></td>
+                                            </div>
+                                        </div>
+                                    </tr>
+                                {%  endfor %}
+                                <tr></tr>
+
+                            </table>
+                                {% endif %}
+                            </div>
+                                <div class="container">
+                                  <div class="row">
+                                    <div class="col col-lg-6">
+                                      <p id="address">Address: {{ delivery }} </p>
+                                    </div>
+                                    <div class="col col-lg-6">
+                                      <p id="payment">Payment Details: </p>
+                                    </div>
+                                  </div>
+                                </div>
+                                <hr>
+                                <div id="delivery-charge"><h4> Card charge: £0.60p </h4></div>
+                                <div id="delivery-charge"><h4> Delivery charge: £1.00p </h4></div>
+                                <hr>
+                                <div id="total"><h2>Total: £{{ total }} </h2></div>
+                                <hr>
+
+                                <div class="container">
+                                  <div class="row">
+                                    <div class="col col-lg-6">
+                                        <button class="btn btn-xs btn-primary" onclick="stepnext(2);" type="button"><i class="icon-next"></i> Back </button>
+                                    </div>
+                                    <div class="col col-lg-6">
+                                        <form id="paymentForm" method="post" action="/payment/">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="name" value="value" />
+                                            <a class="btn btn-xs btn-success" onclick="document.getElementById('paymentForm').submit();">
+                                                <button id="payment_details_btn" class="btn btn-xs btn-success" onclick="stepnext(0);" type="button"><i class="icon-next"></i>Pay Now </button>
+                                            </a>
+                                        </form>
+                                        <br/>
+                                        <br/>
+                                        <br/>
+                                        <br/>
+                                    </div>
+                                  </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -215,17 +277,20 @@
         $("#delivery_details_btn").click(function () {
             console.log("delivery details will be saved");
 
-
             var name = $("#name").val();
             var street = $("#street").val();
             var postcode = $("#postcode").val();
             var city = $("#city").val();
             var country = $("#country").val();
+            var phone = $("#phone-number").val();
+
+            var element = document.getElementById("address");
+            element.innerHTML = "<strong> Delivery Details: </strong>" + "<br/> Name: " + name + " <br/> Street: " + street + "<br/> Postcode: " + postcode + " <br/> City: " + city + " <br/> Country: " + country + " <br/> Phone: " + phone;
 
             $.ajax({
-                url: "/checkout/2",
+                url: "/checkout/2/",
                 type: "POST",
-                data: {'name': name, 'street': street, 'postcode': postcode, 'city': city, 'country': country, 'csrfmiddlewaretoken' : csrf},
+                data: {'name': name, 'street': street, 'postcode': postcode, 'city': city, 'country': country, 'phone' : phone, 'csrfmiddlewaretoken' : csrf},
                 success: function (result) {
                     console.log("delivery details saved");
                 },
@@ -246,12 +311,18 @@
             var cvv = $("#cvv").val();
             var card_holdername = $("#cardholdername").val();
 
+            var element = document.getElementById("payment");
+            element.innerHTML = "<strong> Payment Details: </strong> " + "<br/> Card Type: " + card_type + " <br/> Card Number: " + card_number + "<br/> Expiry Year: " + expiry_year + " <br/> Card Holdername: " + card_holdername;
+
             $.ajax({
-                url: "/checkout/3",
+                url: "/checkout/3/",
                 type: "POST",
                 data: {'card_type': card_type, 'card_number': card_number, 'expiry_month': expiry_month, 'expiry_year': expiry_year, 'cvv': cvv, 'card_holdername' : card_holdername, 'csrfmiddlewaretoken' : csrf},
                 success: function (result) {
                     console.log("payment details saved");
+                },
+                error: function (xmlHttpRequest, textStatus, errorThrown) {
+                     alert(errorThrown);
                 }
             });
         });
