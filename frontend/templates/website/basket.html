@@ -211,7 +211,7 @@
 
                 <tr>
                     <td> TOTAL: £{{ total }} </td>
-                    <td><a class="btn btn-success btn-lg" href="/checkout" id="btn-checkout" class="hvr-float">Checkout</a></td>
+                    <td><a class="btn btn-success btn-lg" id="btn-checkout" class="hvr-float">Checkout</a></td>
                 </tr>
 
             </table>
@@ -240,6 +240,9 @@
 
 <script>
     var csrf = $( '[name="csrfmiddlewaretoken"]' ).val();
+    var paymentType = "";
+    var deliveryOption = "";
+
     $(document).ready(function() {
 {#        $(".select-quantity").change(function(){#}
 {#            var id = $(this).parent().parent().parent().parent().attr("id")#}
@@ -263,7 +266,69 @@
                 }
             });
         });
+
+        $("#btn-checkout").click(function() {
+            var delivery = bootbox.dialog({
+                title: 'Delivery Option',
+                message: "<p>Choose your Delivery option.</p>",
+                buttons: {
+                    card: {
+                        label: "Collection",
+                        className: 'btn-info',
+                        callback: function (result) {
+                            deliveryOption = "collection";
+                        }
+                    },
+                    cash: {
+                        label: "Door Delivery",
+                        className: 'btn-info',
+                        callback: function () {
+                            deliveryOption = "delivery";
+                        }
+                    }
+                },
+                closeButton: false
+            });
+
+            var payment = bootbox.dialog({
+                title: 'Payment Option',
+                message: "<p>Choose your payment option.</p>",
+                buttons: {
+                    card: {
+                        label: "Card Payment",
+                        className: 'btn-info',
+                        callback: function(){
+                            paymentType = "card";
+                        }
+                    },
+                    cash: {
+                        label: "Cash Payment",
+                        className: 'btn-info',
+                        callback: function(){
+                            paymentType = "cash";
+                        }
+                    }
+                },
+                closeButton: false
+            });
+        });
     });
+
+    window.setInterval(function(){
+      if (paymentType != "" && deliveryOption != "") {
+            $.ajax({
+                url : "/checkout/",
+                type: "POST",
+                data : {"payment_type" : paymentType, "delivery_type" : deliveryOption, 'csrfmiddlewaretoken' : csrf},
+                success : function() {
+                    location.replace("/checkout/1/");
+                },
+                error : function(xmlHttpRequest, textStatus, errorThrown) {
+                    console.log(errorThrown);
+                }
+            });
+      }
+    }, 4000);
 </script>
 
 </body>

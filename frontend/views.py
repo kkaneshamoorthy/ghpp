@@ -3,10 +3,12 @@ from frontend.models import Product
 from frontend.models import Category
 from frontend.models import ProductExtras
 from frontend.models import Extras
+from frontend.models import UtilityData
 from django.http import HttpResponseRedirect, HttpResponse, Http404, HttpResponseBadRequest
 from .serializers import ProductSerializer
 from .serializers import CategorySerializer
 from .serializers import ProductExtrasSerializer
+from .serializers import UtilitySerializer
 from .serializers import ExtraSerializer
 import json
 from paypalrestsdk import Payment
@@ -143,15 +145,42 @@ def remove(request):
     raise Http404
 
 def checkout(request):
-    context = {}
+    if (request.method == "POST"):
+        context = {}
+        paymentTitle = ""
+        deliveryTitle = ""
+        payment_type = request.POST.get("payment_type")
+        delivery_type = request.POST.get("delivery_type")
+
+        if (payment_type == "cash"):
+            paymentTitle = "CASH PAYMENT"
+        else:
+            paymentTitle = "CARD PAYMENT"
+
+        if (delivery_type == "collection"):
+            deliveryTitle = "YOUR ADDRESS"
+        else:
+            deliveryTitle = "DELIVERY ADDRESS"
+
+        context = {'payment_title' : paymentTitle, 'delivery_title' : deliveryTitle, 'payment_type' : payment_type, 'delivery_type' : delivery_type}
+
+        request.session['context'] = context
+
+    request.session['checkout'] = {}
     return HttpResponseRedirect("/checkout/1")
 
 def checkout_delivery(request):
     context = {}
+    paymentTitle = request.session['context']['payment_title']
+    payment_type = request.session['context']['payment_type']
+    deliveryTitle = request.session['context']['delivery_title']
+    deliveryType = request.session['context']['delivery_type']
+
     products = []
     total = 0
     request.session['checkout'] = {}
     checkout = request.session['checkout']
+    delivery_and_payment_info = request.session['context']
 
     basket = request.session['basket']
 
@@ -184,7 +213,11 @@ def checkout_delivery(request):
     request.session['checkout'] = checkout
     request.session['basket_total'] = total
 
-    context = {'products': products, 'total': total}
+    card_charge = UtilitySerializer(UtilityData.objects.filter(name="card_charge"), many=True)
+    delivery_charge = UtilitySerializer(UtilityData.objects.filter(name="delivery_charge"), many=True)
+
+    context = {'products': products, 'total': total, 'payment_title': paymentTitle, 'delivery_title': deliveryTitle, 'payment_type' : payment_type, 'delivery_type' : deliveryType,
+               'card_charge' : json.dumps(card_charge.data), 'delivery_charge' : json.dumps(delivery_charge.data)}
 
     return render(request, 'website/checkout-delivery.html', context)
 
@@ -288,7 +321,7 @@ def payment(request):
                             "city": delivery['city'], #"Johnstown",
                             "state": "OH",
                             "postal_code": delivery['postcode'], #"43210",
-                            "country_code": "UK"
+                            "country_code": "GB"
                         }
                     }
                 }]
@@ -296,20 +329,18 @@ def payment(request):
             "transactions": [{
                 "amount": {
                     "total": total['total'],
-                    "currency": "USD"
+                    "currency": "GBP"
                 },
                 "description": "This is the payment transaction description."
             }]
         })
 
-        context = ""
-
         # Create payment
         if payment.create():
-            context = ("Payment[%s] created successfully" % (payment.id))
+            context = {"status" : "success", "message" : "Payment created successfully", 'data' : payment.id}
+            request.session['basket'] = {}
+            request.session['checkout'] = {}
         else:
             # Display Error message
-            context = ("Error while creating payment:")
-            context = (payment.error)
-
-    return HttpResponse(json.dumps(context))
+            context = {"status" : "failed", "message" : "Error while creating payment:", "data" : payment.error}
+    return render(request, 'website/ordered.html', context)

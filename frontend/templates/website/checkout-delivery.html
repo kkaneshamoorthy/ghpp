@@ -76,7 +76,7 @@
                     <div class="stepwizard-row">
                         <div class="stepwizard-step">
                             <a class="btn btn-default btn-circle active-step" href="#step-1" data-toggle="tab" onclick="stepnext(1)" >1</a>
-                            <p>Delivery Details</p>
+                            <p>Your Details</p>
                         </div>
                         <div class="stepwizard-step">
                             <a class="btn btn-default btn-circle" disabled="disabled" href="#step-2" data-toggle="tab">2</a>
@@ -93,7 +93,7 @@
                     <div class="rate-updates">
                         <div class="tab-content margintop0" style="border:none !important;">
                             <div class="tab-pane fade active in padding20" id="step-1" >
-                                <div class="row">  <h3 class="bold">DELIVERY ADDRESS</h3> </div>
+                                <div class="row">  <h3 class="bold"> {{ delivery_title }}</h3> </div>
 
                                 <hr>
                                 <form method="POST" action="/checkout/2/">
@@ -141,7 +141,8 @@
                             </div>
 
                             <div class="tab-pane fade padding20 " id="step-2">
-                                <div class="row"> <h3 class="bold">PAYMENT</h3> </div>
+                                <div class="row"> <h3 class="bold">{{ payment_title }}</h3> </div>
+                                {% if payment_type == "card" %}
                                 <table>
                                     <tr>
                                         <div class="placeholder-override-wrap">
@@ -186,6 +187,23 @@
                                     </div>
                                     </tr>
                                 </table>
+                                {% else %}
+                                    <div class="alert alert-info" role="alert">
+                                        <p>You will have to pay: <strong> £{{ total }}p </strong> when food is delivered</p>
+                                    </div>
+
+                                    <div class="panel-body">
+                                    <div class="row">
+                                        <div class="col col-lg-6">
+                                            <button class="btn btn-xs btn-primary" onclick="stepnext(1);" type="button"><i class="icon-next"></i> Back </button>
+                                        </div>
+
+                                        <div class="col col-lg-6">
+                                            <button id="payment_details_btn" class="btn btn-xs btn-primary" onclick="stepnext(3);" type="button"><i class="icon-next"></i> Next </button>
+                                        </div>
+                                    </div>
+                                  </div>
+                                {% endif %}
                             </div>
 
                             <div class="tab-pane fade padding20 " id="step-3" >
@@ -217,17 +235,23 @@
                                 <div class="container">
                                   <div class="row">
                                     <div class="col col-lg-6">
-                                      <p id="address">Address: {{ delivery }} </p>
+                                      <p id="address">{{ delivery_title }} </p>
                                     </div>
                                     <div class="col col-lg-6">
-                                      <p id="payment">Payment Details: </p>
+                                      <p id="payment"> Cash payment of £{{ total }}p have to be paid at {{ delivery_type }} </p>
                                     </div>
                                   </div>
                                 </div>
                                 <hr>
-                                <div id="delivery-charge"><h4> Card charge: £0.60p </h4></div>
-                                <div id="delivery-charge"><h4> Delivery charge: £1.00p </h4></div>
-                                <hr>
+                                {% if payment_type == "card" %}
+                                    <div id="delivery-charge"><h4> Card charge: £0.60p </h4></div>
+                                    <hr>
+                                {% endif %}
+                                {% if delivery_type == "delivery" %}
+                                    <div id="delivery-charge"><h4> Delivery charge: £1.00p </h4></div>
+                                    {{ delivery_charge }}
+                                    <hr>
+                                {% endif %}
                                 <div id="total"><h2>Total: £{{ total }} </h2></div>
                                 <hr>
 
@@ -241,7 +265,7 @@
                                             {% csrf_token %}
                                             <input type="hidden" name="name" value="value" />
                                             <a class="btn btn-xs btn-success" onclick="document.getElementById('paymentForm').submit();">
-                                                <button id="payment_details_btn" class="btn btn-xs btn-success" onclick="stepnext(0);" type="button"><i class="icon-next"></i>Pay Now </button>
+                                                <button id="pay-now" class="btn btn-xs btn-success" onclick="stepnext(0);" type="button"><i class="icon-next"></i>Pay Now </button>
                                             </a>
                                         </form>
                                         <br/>
@@ -285,7 +309,7 @@
             var phone = $("#phone-number").val();
 
             var element = document.getElementById("address");
-            element.innerHTML = "<strong> Delivery Details: </strong>" + "<br/> Name: " + name + " <br/> Street: " + street + "<br/> Postcode: " + postcode + " <br/> City: " + city + " <br/> Country: " + country + " <br/> Phone: " + phone;
+            element.innerHTML = "<strong> {{ delivery_title }}: </strong>" + "<br/> Name: " + name + " <br/> Street: " + street + "<br/> Postcode: " + postcode + " <br/> City: " + city + " <br/> Country: " + country + " <br/> Phone: " + phone;
 
             $.ajax({
                 url: "/checkout/2/",
@@ -311,9 +335,10 @@
             var cvv = $("#cvv").val();
             var card_holdername = $("#cardholdername").val();
 
-            var element = document.getElementById("payment");
-            element.innerHTML = "<strong> Payment Details: </strong> " + "<br/> Card Type: " + card_type + " <br/> Card Number: " + card_number + "<br/> Expiry Year: " + expiry_year + " <br/> Card Holdername: " + card_holdername;
-
+             {% if payment_type == "card" %}
+                var element = document.getElementById("payment");
+                element.innerHTML = "<strong> Payment Details: </strong> " + "<br/> Card Type: " + card_type + " <br/> Card Number: " + card_number + "<br/> Expiry Year: " + expiry_year + " <br/> Card Holdername: " + card_holdername;
+             {% endif %}
             $.ajax({
                 url: "/checkout/3/",
                 type: "POST",
@@ -326,6 +351,15 @@
                 }
             });
         });
+
+         $("pay-now").click(function() {
+             var dialog = bootbox.dialog({
+            message: '<p class="text-center">Please wait while we do something...</p>',
+                closeButton: false
+            });
+            // do something in the background
+            dialog.modal('hide');
+         });
     </script>
 
 

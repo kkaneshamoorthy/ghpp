@@ -21,3 +21,7 @@ class Extras(models.Model):
 class ProductExtras(models.Model):
     product_id = models.IntegerField(max_length=50)
     extra_id = models.IntegerField(max_length=50)
+
+class UtilityData(models.Model):
+    name = models.CharField(max_length=200)
+    info = models.CharField(max_length=200)

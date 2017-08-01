@@ -3,6 +3,7 @@ from .models import Product
 from .models import Category
 from .models import Extras
 from .models import ProductExtras
+from .models import UtilityData
 
 class CategorySerializer(serializers.Serializer):
     name = serializers.CharField(read_only=True)
@@ -25,3 +26,6 @@ class ExtraSerializer(serializers.Serializer):
 class ProductExtrasSerializer(serializers.Serializer):
     product_id = serializers.CharField()
     extra_id = serializers.CharField()
+
+class UtilitySerializer(serializers.Serializer):
+    info = serializers.CharField()
