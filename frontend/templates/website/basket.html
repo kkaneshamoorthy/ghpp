@@ -144,7 +144,7 @@
  {% csrf_token %}
 
     <!-- Navigation -->
-    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
         <div class="container">
             <div class="navbar-header page-scroll">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
@@ -184,7 +184,7 @@
     </nav>
 
     <section id="menu" class="intro-section">
-    <div class="container">
+    <div id="container-body" class="container">
         <div id="menu_list" class="col-lg-9">
             <div>
                 {% if products %}
@@ -328,7 +328,7 @@
                 }
             });
       }
-    }, 4000);
+    }, 2000);
 </script>
 
 </body>

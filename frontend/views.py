@@ -67,12 +67,13 @@ def product(request, id):
 def add_product(request):
     if (request.method == 'POST'):
         product_id = request.POST.get("product_id")
-        extras_id = request.POST.get("extras_id").split(",")
         extraArr = []
         quantity = 1
 
-        for value in extras_id:
-            extraArr.append(value)
+        if "extras_id" in request.POST:
+            extras_id = request.POST.get("extras_id").split(",")
+            for value in extras_id:
+                extraArr.append(value)
 
         basket = request.session['basket']
 
@@ -82,7 +83,7 @@ def add_product(request):
         basket[product_id] = {"extras" : extraArr, "quantity" : quantity}
 
         request.session['basket'] = basket
-        return HttpResponse(json.dumps(basket))
+        return HttpResponse("product added")
     raise Http404
 
 
@@ -109,7 +110,7 @@ def basket(request):
         extraData = []
         product = Product.objects.get(id=product_id) #get product
 
-        if extraIds[0] == '':
+        if extraIds == '':
             extraData = []
         else:
             for extraId in extraIds:
@@ -195,7 +196,7 @@ def checkout_delivery(request):
         extraData = []
         product = Product.objects.get(id=product_id) #get product
 
-        if extraIds[0] == '':
+        if extraIds == '':
             extraData = []
         else:
             for extraId in extraIds:

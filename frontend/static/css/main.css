@@ -1,8 +1,6 @@
 * {
     font-size: large;
-    font-weight:normal;color:#000000;letter-spacing:1pt;word-spacing:2pt;font-size:17px;text-align:left;font-family:georgia, serif;line-height:2;
-
-
+    font-weight:normal;color:#000000;letter-spacing:1pt;word-spacing:2pt;text-align:left;font-family:georgia, serif;line-height:2;
 }
 
 #btn-add-basket {
@@ -69,4 +67,9 @@
  padding: 15px !important;
  width: 100% !important;
 
+}
+
+
+#home-background {
+    background: url("https://c1.staticflickr.com/3/2918/14195226791_618e286e59_b.jpg");
 }

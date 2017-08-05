@@ -35,7 +35,10 @@ of those sections to manage the look and feel of the site. */
     height: 100%;
     padding-top: 150px;
     text-align: center;
-    background: #fff;
+    background: url("https://c1.staticflickr.com/3/2918/14195226791_618e286e59_b.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+
 }
 
 .about-section {
@@ -43,6 +46,9 @@ of those sections to manage the look and feel of the site. */
     padding-top: 150px;
     text-align: center;
     background: #eee;
+    background: url("https://image.freepik.com/free-photo/tasty-fresh-colorful-ingredients-for-cooking-pasta-tagliatelle-with-fresh-basil-and-tomatoes-top-view-wooden-table-background_1220-1179.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
 }
 
 .services-section {
@@ -59,6 +65,18 @@ of those sections to manage the look and feel of the site. */
     background: #eee;
 }
 
-.menu {
-    position: relative;
+.menu-section {
+    height: 100%;
+    padding-top: 150px;
+    text-align: center;
+    background: url("https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/Tomatoes%2C_carrots%2C_garlic_ingredients_of_tomatoe_sauce_11.06.2011_13-04-23.JPG/1280px-Tomatoes%2C_carrots%2C_garlic_ingredients_of_tomatoe_sauce_11.06.2011_13-04-23.JPG");
+    background-repeat: no-repeat;
+    background-size: cover;
 }
+
+#container-body {
+    background: rgb(204, 204, 204); /* Fallback for older browsers without RGBA-support */
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 25px;
+}
+

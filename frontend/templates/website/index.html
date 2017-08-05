@@ -31,7 +31,7 @@
  {% csrf_token %}
 
     <!-- Navigation -->
-    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
         <div class="container">
             <div class="navbar-header page-scroll">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
@@ -44,7 +44,7 @@
             </div>
 
             <div class="collapse navbar-collapse navbar-ex1-collapse">
-                <ul class="nav navbar-nav">
+                <ul id="nav-buttons" class="nav navbar-nav">
                     <li class="hidden">
                         <a class="page-scroll" href="/"></a>
                     </li>
@@ -72,20 +72,14 @@
 
     <!-- Intro Section -->
     <section id="intro" class="intro-section">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12">
-                    <h1>Galley Hill Peri Peri</h1>
-                    <p>Peri Peri | Pizza | Halal</p>
-                    <!--<a class="btn btn-default page-scroll" href="#about"></a>-->
-                </div>
-            </div>
+        <div id="home-background" class="container">
+
         </div>
     </section>
 
     <!-- About Section -->
     <section id="about" class="about-section">
-        <div class="container">
+        <div id="container-body" class="container">
             <div class="row">
                 <div class="col-lg-12">
                     <h1>About</h1>
@@ -95,24 +89,39 @@
     </section>
 
     <!-- Contact Section -->
-    <section id="contact" class="contact-section">
-        <div class="container">
+    <section id="menu" class="menu-section">
+        <div id="container-body" class="container">
             <div class="row">
                 <div class="col-lg-12">
-                    <h1>Menu</h1>
+                    <h1>Our Menu</h1>
                 </div>
             </div>
 
-            <form action="/menu" method="get">
-                  <button type="submit" class="btn btn-primary btn-lg">View our menu</button>
-            </form>
+
+
+
+{#            <form action="/menu" method="get">#}
+{#                  <button type="submit" class="btn btn-primary btn-lg">View our menu</button>#}
+{#            </form>#}
 
         </div>
     </section>
 
-    <script src="{% static 'js/bootstrap.min.js' %}"/>
-    <script src="{% static 'js/scrolling-nav.js' %}"/>
-    <script src="{% static 'js/jquery-3.1.1.min.js' %}"/>
+      <!-- jQuery -->
+{#    <script src="{% static '/js/jquery.js' %} "></script>#}
+    <script src="{% static '/js/jquery-3.1.1.min.js' %} "></script>
+    <script src="{% static '/js/jquery-ui.min.js' %} "></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src={% static 'js/bootstrap.min.js' %}></script>
+
+    <!-- Scrolling Nav JavaScript -->
+{#    <script src="resources/js/jquery.easing.min.js"></script>#}
+    <script src="{% static 'js/scrolling-nav.js' %}"></script>
+    <script src="{% static 'js/slippry.min.js' %}"></script>
+    <script src="{% static 'js/bootbox.min.js' %}"></script>
+
+
 </body>
 
 </html>
