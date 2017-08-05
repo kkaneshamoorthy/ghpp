@@ -69,76 +69,79 @@
         </div>
     </nav>
 
- <section id="menu" class="intro-section">
- <div id="container-body" class="container">
+ <div id="blur-box">
+ <div id="menu-content">
+{# <div id="box1" class="box blurred-bg tinted">#}
+{#     <div class="form-style-6">#}
         <div class="row">
+            <br />
+            <br />
+
             <div id="menuBar" class="col-lg-3">
                 <ul class="nav nav-pills navbar-flow nav-stacked navbar-left">
 {#                      <li role="presentation" class="active"><a href="#alochol">Alochol</a></li>#}
                     {% for category in category_list %}
                         <li role="presentation"><a href="#{{ category.sub_name }}"> {{ category.name }} </a></li>
                     {% endfor %}
-                    </ul>
+                </ul>
             </div>
 
             <div id="menu_list" class="col-lg-9">
+                 <script>
+                     var output = "";
+                        {% for category in category_list %}
+                            {% for product in product %}
+                                {% if product.category == category.name %}
+                                          $(document).ready( function() {
+                                            var request = new XMLHttpRequest();
+                                            request.onreadystatechange = function() {
+                                              if (this.readyState == 4) {
+                                                  var data = JSON.parse(request.response);
+                                                  output = "<h1 id='{{ category.sub_name }}'> {{ category.name }} </h1>";
+                                                  output += "<h5> {{ category.description }} </h5>";
+                                                  output += "<div class='panel panel-default' style='background-color: transparent'>";
+                                                  output += "<div class='panel-body' align='left'>";
 
-            <a class="cart_anchor"></a>
+                                                  for (var i=0; i < data.length; i++) {
+                                                      var p = data[i];
+                                                      var productID = p.id;
+                                                      console.log(p.id);
+                                                      output += "<strong>" + p["name"] + "</strong> <br>";
+                                                      output += p["description"] + "<br>";
+                                                      output += "<table class='table'> <tr>";
 
-             <script>
-             var output = "";
-                {% for category in category_list %}
-                    {% for product in product %}
-                        {% if product.category == category.name %}
-                                  $(document).ready( function() {
-                                    var request = new XMLHttpRequest();
-                                    request.onreadystatechange = function() {
-                                      if (this.readyState == 4) {
-                                          var data = JSON.parse(request.response);
-                                          output = "<h1 id='{{ category.sub_name }}'> {{ category.name }} </h1>";
-                                          output += "<h5> {{ category.description }} </h5>";
-                                          output += "<div class='panel panel-default' style='background-color: transparent'>";
-                                          output += "<div class='panel-body' align='left'>";
+                                                      //display different size and their prices
+                                                      var portion = p["size"].split(";");
+                                                      for (var j=0; j<portion.length; j++) {
+                                                          var sizeData = portion[j].split(":");
 
-                                          for (var i=0; i < data.length; i++) {
-                                              var p = data[i];
-                                              var productID = p.id;
-                                              console.log(p.id);
-                                              output += "<strong>" + p["name"] + "</strong> <br>";
-                                              output += p["description"] + "<br>";
-                                              output += "<table class='table'> <tr>";
+                                                          var addButtonID = productID+":"+sizeData[0]+":"+sizeData[1];
 
-                                              //display different size and their prices
-                                              var portion = p["size"].split(";");
-                                              for (var j=0; j<portion.length; j++) {
-                                                  var sizeData = portion[j].split(":");
+                                                          output += "<td>" + sizeData[0 ] + "</td>";
+                                                          output += "<td>£"+ sizeData[1];
+                                                          output += "<a class='btn-add-basket' id='"+addButtonID+"' class='hvr-grow'> <span class='glyphicon glyphicon-plus-sign' aria-hidden='true'></span> </a> </td> </tr>";
+                                                      }
 
-                                                  var addButtonID = productID+":"+sizeData[0]+":"+sizeData[1];
+                                                      output+="</table>";
+                                                  }
+                                                  output += "</div>"
 
-                                                  output += "<td>" + sizeData[0 ] + "</td>";
-                                                  output += "<td>£"+ sizeData[1];
-                                                  output += "<a class='btn-add-basket' id='"+addButtonID+"' class='hvr-grow'> <span class='glyphicon glyphicon-plus-sign' aria-hidden='true'></span> </a> </td> </tr>";
+                                                  var panel = document.getElementById("menu_list");
+                                                  panel.innerHTML = panel.innerHTML + output;
                                               }
-
-                                              output+="</table>";
-                                          }
-                                          output += "</div>"
-
-                                          var panel = document.getElementById("menu_list");
-                                          panel.innerHTML = panel.innerHTML + output;
-                                      }
-                                    };
-                                    request.open("GET", "/product/{{ product.category }}/", true);
-                                    request.send();
-                                  });
-                        {% endif %}
-                    {% endfor %}
-                {% endfor %}
-            </script>
+                                            };
+                                            request.open("GET", "/product/{{ product.category }}/", true);
+                                            request.send();
+                                          });
+                                {% endif %}
+                            {% endfor %}
+                        {% endfor %}
+                </script>
             </div>
         </div>
-    </div>
-    </section>
+        </div>
+ </div>
+ </div>
 
   <!-- jQuery -->
 {#    <script src="{% static '/js/jquery.js' %} "></script>#}

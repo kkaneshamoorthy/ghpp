@@ -4,16 +4,6 @@
  * Licensed under MIT (https://github.com/BlackrockDigital/startbootstrap/blob/gh-pages/LICENSE)
  */
 
-body {
-    width: 100%;
-    height: 100%;
-}
-
-html {
-    width: 100%;
-    height: 100%;
-}
-
 @media(min-width:767px) {
     .navbar {
         padding: 20px 0;
@@ -35,7 +25,7 @@ of those sections to manage the look and feel of the site. */
     height: 100%;
     padding-top: 150px;
     text-align: center;
-    background: url("https://c1.staticflickr.com/3/2918/14195226791_618e286e59_b.jpg");
+    background: url("https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/Tomatoes%2C_carrots%2C_garlic_ingredients_of_tomatoe_sauce_11.06.2011_13-04-23.JPG/1280px-Tomatoes%2C_carrots%2C_garlic_ingredients_of_tomatoe_sauce_11.06.2011_13-04-23.JPG");
     background-repeat: no-repeat;
     background-size: cover;
 
@@ -64,6 +54,7 @@ of those sections to manage the look and feel of the site. */
     text-align: center;
     background: #eee;
 }
+/*https://c1.staticflickr.com/3/2918/14195226791_618e286e59_b.jpg*/
 
 .menu-section {
     height: 100%;
@@ -75,8 +66,9 @@ of those sections to manage the look and feel of the site. */
 }
 
 #container-body {
-    background: rgb(204, 204, 204); /* Fallback for older browsers without RGBA-support */
-    background: rgba(255, 255, 255, 0.5);
+    padding: 5%;
+    background: rgb(0, 0, 0); /* Fallback for older browsers without RGBA-support */
+    background: rgba(0, 0, 0, 0.5);
     border-radius: 25px;
+    color: white;
 }
-

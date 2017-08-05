@@ -30,7 +30,7 @@
   {% csrf_token %}
 
     <!-- Navigation -->
-    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
         <div class="container">
             <div class="navbar-header page-scroll">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
@@ -70,8 +70,9 @@
     </nav>
 
     <section id="menu" class="intro-section">
-        <div id="container-body"  class="container">
-	        <div class="row">
+        <div id="box1" class="box blurred-bg tinted">
+            <div class="content">
+            <div class="row">
                 <div class="stepwizard">
                     <div class="stepwizard-row">
                         <div class="stepwizard-step">
@@ -90,195 +91,144 @@
                 </div>
             </div>
 
-                    <div class="rate-updates">
-                        <div class="tab-content margintop0" style="border:none !important;">
-                            <div class="tab-pane fade active in padding20" id="step-1" >
-                                <div class="row">  <h3 class="bold"> {{ delivery_title }}</h3> </div>
+            <div class="rate-updates">
+                <div class="tab-content margintop0" style="border:none !important;">
 
-                                <hr>
-                                <form method="POST" action="/checkout/2/">
+                    <div class="tab-pane fade active in padding20" id="step-1" >
+                        <div class="form-style-5">
+                            <form method="POST" action="/checkout/2/">
+                                {% csrf_token %}
+                                <fieldset>
+                                    <legend><span class="number">1</span> YOUR DETAILS </legend>
+                                    <td><input name="name" type="text" class="placeholder-override-input" placeholder="Name" id="name" required autocomplete="off"></td>
+                                    <td><input name="phone-number" type="text" placeholder="Phone Number" class="placeholder-override-input" id="phone-number" required autocomplete="off"></td>
+                                </fieldset>
+                                <fieldset>
+                                    <legend><span class="number">2</span> {{ delivery_title }} </legend>
+                                    <td><input name="street" type="text" placeholder="Street" class="placeholder-override-input" id="street" required autocomplete="off"></td>
+                                    <td><input name="postcode" type="text" placeholder="Postcode" class="placeholder-override-input" id="postcode" required autocomplete="off"></td>
+                                    <td><input name="city" type="text" placeholder="City" class="placeholder-override-input" id="city" required autocomplete="off"></td>
+                                    <td><input name="country" type="text" placeholder="Country" class="placeholder-override-input" id="country" required autocomplete="off"></td>
+                                </fieldset>
+                                <input id="delivery_details_btn" onclick="stepnext(2);" type="button" value="Next"/>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade padding20 " id="step-2">
+                        <div class="form-style-5">
+                        <form method="POST" action="/checkout/2/">
+                         <fieldset>
+                            {% if payment_type == "card" %}
                                     {% csrf_token %}
-                                    <table>
-                                        <tr>
-                                            <div class="placeholder-override-wrap">
-                                                <td><span class="placeholder-override-label">Name</span></td>
-                                                <td><input name="name" type="text" class="placeholder-override-input" id="name" required autocomplete="off"></td>
-                                            </div>
-                                        </tr>
-                                        <tr>
-                                        <div class="placeholder-override-wrap">
-                                            <td><span class="placeholder-override-label">Street Address</span></td>
-                                            <td><input name="street" type="text" class="placeholder-override-input" id="street" required autocomplete="off"></td>
-                                        </div>
-                                        </tr>
-                                        <tr>
-                                        <div class="placeholder-override-wrap">
-                                            <td><span class="placeholder-override-label">Postcode</span></td>
-                                            <td><input name="postcode" type="text" class="placeholder-override-input" id="postcode" required autocomplete="off"></td>
-                                        </div>
-                                        </tr>
-                                        <tr>
-                                        <div class="placeholder-override-wrap">
-                                            <td><span class="placeholder-override-label">City</span></td>
-                                            <td><input name="city" type="text" class="placeholder-override-input" id="city" required autocomplete="off"></td>
-                                        </div>
-                                        </tr>
-                                        <tr>
-                                         <div class="placeholder-override-wrap">
-                                             <td><span class="placeholder-override-label">Country</span></td>
-                                            <td><input name="country" type="text" class="placeholder-override-input" id="country" required autocomplete="off"></td>
-                                        </div>
-                                        </tr>
-                                        <tr>
-                                         <div class="placeholder-override-wrap">
-                                             <td><span class="placeholder-override-label">Phone number:</span></td>
-                                            <td><input name="phone-number" type="text" class="placeholder-override-input" id="phone-number" required autocomplete="off"></td>
-                                        </div>
-                                        </tr>
-                                    </table>
-                                    <button id="delivery_details_btn" class="btn btn-xs btn-primary" onclick="stepnext(2);" type="button"><i class="icon-next"></i> Next </button>
-                                </form>
+                                        <legend><span class="number">1</span> {{ payment_title }} </legend>
+                                        <td><input name="card_type" type="text" placeholder="Card Type" class="placeholder-override-input" id="card_type" required autocomplete="off"></td>
+                                        <td><input name="cardnumber" type="text" placeholder="Card Number" class="placeholder-override-input" id="cardnumber" required autocomplete="off"></td>
+                                        <td><input name="expiry_month" type="text" placeholder="Expiry Month" class="placeholder-override-input" id="expiry_month" required autocomplete="off"></td>
+                                        <td><input name="expiry_year" type="text" placeholder="Expiry Year" class="placeholder-override-input" id="expiry_year" required autocomplete="off"></td>
+                                        <td><input name="cvv" type="text" placeholder="CVV" class="placeholder-override-input" id="cvv" required autocomplete="off"></td>
+                                        <td><input name="cardholdername" type="text" placeholder="CardHolder Name" class="placeholder-override-input" id="cardholdername" required autocomplete="off"></td>
+{#                                    <td><button class="btn btn-xs btn-primary" onclick="stepnext(1);" type="button"><i class="icon-next"></i> Back </button></td>#}
+{#                                    <td><button id="payment_details_btn" class="btn btn-xs btn-primary" onclick="stepnext(3);" type="button"><i class="icon-next"></i> Next </button></td>#}
+                            {% else %}
+                                <div class="alert alert-info" role="alert">
+                                    <p>You will have to pay: <strong> £{{ total }}p </strong> when food is delivered</p>
+                                </div>
+                            {% endif %}
+
+                            <div class="panel-body">
+                                <div class="row">
+                                    <div class="col col-lg-6">
+                                        <input onclick="stepnext(1);" type="button" value="Back"/>
+                                    </div>
+                                    <div class="col col-lg-6">
+                                        <input id="payment_details_btn" value="Next" onclick="stepnext(3);" type="button" />
+                                    </div>
+                                </div>
                             </div>
+                         </fieldset>
+                        </form>
+                        </div>
+                    </div>
 
-                            <div class="tab-pane fade padding20 " id="step-2">
-                                <div class="row"> <h3 class="bold">{{ payment_title }}</h3> </div>
-                                {% if payment_type == "card" %}
-                                <table>
-                                    <tr>
-                                        <div class="placeholder-override-wrap">
-                                        <td><span class="placeholder-override-label">Card Type</span></td>
-                                        <td><input name="card_type" type="text" class="placeholder-override-input" id="card_type" required autocomplete="off"></td>
-                                        </div>
-                                    </tr>
-                                    <tr>
-                                        <div class="placeholder-override-wrap">
-                                        <td><span class="placeholder-override-label">Card Number</span></td>
-                                        <td><input name="cardnumber" type="text" class="placeholder-override-input" id="cardnumber" required autocomplete="off"></td>
-                                        </div>
-                                    </tr>
-                                    <tr>
-                                    <div class="placeholder-override-wrap">
-                                        <td><span class="placeholder-override-label">Expiry Month</span></td>
-                                        <td><input name="expiry_month" type="text" class="placeholder-override-input" id="expiry_month" required autocomplete="off"></td>
-                                    </div>
-                                    </tr>
-                                    <tr>
-                                    <div class="placeholder-override-wrap">
-                                        <td><span class="placeholder-override-label">Expiry Year</span></td>
-                                        <td><input name="expiry_year" type="text" class="placeholder-override-input" id="expiry_year" required autocomplete="off"></td>
-                                    </div>
-                                    </tr>
-                                    <tr>
-                                    <div class="placeholder-override-wrap">
-                                        <td><span class="placeholder-override-label">CVV</span></td>
-                                        <td><input name="cvv" type="text" class="placeholder-override-input" id="cvv" required autocomplete="off"></td>
-                                    </div>
-                                    </tr>
-                                    <tr>
-                                    <div class="placeholder-override-wrap">
-                                        <td><span class="placeholder-override-label">Cardholder Name</span></td>
-                                        <td><input name="cardholdername" type="text" class="placeholder-override-input" id="cardholdername" required autocomplete="off"></td>
-                                    </div>
-                                    </tr>
-                                    <tr>
-                                    <div class="wizard-btn-container">
-                                        <td><button class="btn btn-xs btn-primary" onclick="stepnext(1);" type="button"><i class="icon-next"></i> Back </button></td>
-                                        <td><button id="payment_details_btn" class="btn btn-xs btn-primary" onclick="stepnext(3);" type="button"><i class="icon-next"></i> Next </button></td>
-                                    </div>
-                                    </tr>
-                                </table>
-                                {% else %}
-                                    <div class="alert alert-info" role="alert">
-                                        <p>You will have to pay: <strong> £{{ total }}p </strong> when food is delivered</p>
-                                    </div>
+                    <div class="tab-pane fade padding20 " id="step-3" >
+                        <div class="form-style-6">
+                            <fieldset>
+                                <legend><span class="number">1</span> CONFIRMATION </legend>
+                            </fieldset>
 
-                                    <div class="panel-body">
-                                    <div class="row">
-                                        <div class="col col-lg-6">
-                                            <button class="btn btn-xs btn-primary" onclick="stepnext(1);" type="button"><i class="icon-next"></i> Back </button>
-                                        </div>
-
-                                        <div class="col col-lg-6">
-                                            <button id="payment_details_btn" class="btn btn-xs btn-primary" onclick="stepnext(3);" type="button"><i class="icon-next"></i> Next </button>
-                                        </div>
-                                    </div>
-                                  </div>
-                                {% endif %}
-                            </div>
-
-                            <div class="tab-pane fade padding20 " id="step-3" >
-                                <div class="row"> <h3 class="bold">CONFIRMATION</h3> </div>
-                                <div>
+                            <div>
                                 {% if products %}
                                     <table class='table'>
-                                {% for product in products %}
-                                    <tr>
-                                        <div class="product-details">
-                                            <div class="product-text">
-                                                <td><span><strong>{{ product.product.name }} : {{ product.product_subname }}</strong></span> <br/>
-                                                    Extras: <br/>
-                                                    {% for extra in product.extras %}
-                                                        <span> --- {{ extra.name }}</span> <br/>
-                                                    {% endfor %}
-                                                </td>
-                                                <td>Quantity: {{ product.quantity }}</td>
-                                                <td><span class="product-price">£{{ product.price }}</span></td>
-                                            </div>
-                                        </div>
-                                    </tr>
-                                {%  endfor %}
-                                <tr></tr>
-
-                            </table>
+                                        {% for product in products %}
+                                            <tr>
+                                                <div class="product-details">
+                                                    <div class="product-text">
+                                                        <td><span><strong>{{ product.product.name }} : {{ product.product_subname }}</strong></span> <br/>
+                                                            Extras: <br/>
+                                                            {% for extra in product.extras %}
+                                                                <span> --- {{ extra.name }}</span> <br/>
+                                                            {% endfor %}
+                                                        </td>
+                                                        <td>Quantity: {{ product.quantity }}</td>
+                                                        <td><span class="product-price">£{{ product.price }}</span></td>
+                                                    </div>
+                                                </div>
+                                            </tr>
+                                        {%  endfor %}
+                                        <tr></tr>
+                                    </table>
                                 {% endif %}
                             </div>
-                                <div class="container">
-                                  <div class="row">
-                                    <div class="col col-lg-6">
-                                      <p id="address">{{ delivery_title }} </p>
-                                    </div>
-                                    <div class="col col-lg-6">
-                                      <p id="payment"> Cash payment of £{{ total }}p have to be paid at {{ delivery_type }} </p>
-                                    </div>
-                                  </div>
-                                </div>
-                                <hr>
-                                {% if payment_type == "card" %}
-                                    <div id="delivery-charge"><h4> Card charge: £0.60p </h4></div>
-                                    <hr>
-                                {% endif %}
-                                {% if delivery_type == "delivery" %}
-                                    <div id="delivery-charge"><h4> Delivery charge: £1.00p </h4></div>
-                                    {{ delivery_charge }}
-                                    <hr>
-                                {% endif %}
-                                <div id="total"><h2>Total: £{{ total }} </h2></div>
-                                <hr>
 
-                                <div class="container">
-                                  <div class="row">
+                            <div class="container">
+                                <div class="row">
                                     <div class="col col-lg-6">
-                                        <button class="btn btn-xs btn-primary" onclick="stepnext(2);" type="button"><i class="icon-next"></i> Back </button>
+                                        <p id="address">{{ delivery_title }} </p>
                                     </div>
+
                                     <div class="col col-lg-6">
-                                        <form id="paymentForm" method="post" action="/payment/">
-                                            {% csrf_token %}
-                                            <input type="hidden" name="name" value="value" />
-                                            <a class="btn btn-xs btn-success" onclick="document.getElementById('paymentForm').submit();">
-                                                <button id="pay-now" class="btn btn-xs btn-success" onclick="stepnext(0);" type="button"><i class="icon-next"></i>Pay Now </button>
-                                            </a>
-                                        </form>
-                                        <br/>
-                                        <br/>
-                                        <br/>
-                                        <br/>
+                                        <p id="payment"> Cash payment of £{{ total }}p have to be paid at {{ delivery_type }} </p>
                                     </div>
-                                  </div>
                                 </div>
+                            </div>
+
+                            {% if payment_type == "card" %}
+                                <div id="delivery-charge"><h4> Card charge: £0.60p </h4></div>
+                                <hr>
+                            {% endif %}
+                            {% if delivery_type == "delivery" %}
+                                <div id="delivery-charge"><h4> Delivery charge: £1.00p </h4></div>
+                                {{ delivery_charge }}
+                                <hr>
+                            {% endif %}
+
+                            <div id="total"><h2>Total: £{{ total }} </h2></div>
+                            <hr>
+                            <div class="container">
+                                <form id="paymentForm" method="post" action="/payment/">
+                                    <fieldset>
+                                        <div class="row">
+                                            <div class="col col-lg-6">
+                                                <input onclick="stepnext(2);" value="Back" type="button" />
+                                            </div>
+                                            <div class="col col-lg-6">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="name" value="value" />
+                                                <a onclick="document.getElementById('paymentForm').submit();">
+                                                    <input id="pay-now" onclick="stepnext(0);" value="Pay Now" type="button" />
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </fieldset>
+                                </form>
                             </div>
                         </div>
                     </div>
                 </div>
+            </div>
+            </div>
+        </div>
     </section>
 
   <!-- jQuery -->
@@ -360,6 +310,13 @@
             // do something in the background
             dialog.modal('hide');
          });
+
+
+
+
+{#    $(function() {    $( ".box" ).draggable();});#}
+
+
     </script>
 
 
