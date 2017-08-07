@@ -165,9 +165,6 @@
                         <a class="page-scroll" href="/menu">Menu</a>
                     </li>
                     <li>
-                        <a class="page-scroll" href="#contact">Contact Us</a>
-                    </li>
-                    <li>
                         <a class="page-scroll" href="/basket"> My Basket <span class="glyphicon glyphicon-shopping-cart"/> </a>
                     </li>
                 </ul>
@@ -184,8 +181,8 @@
     </nav>
 
     <section id="menu" class="intro-section">
-    <div id="container-body" class="container">
-        <div id="menu_list" class="col-lg-9">
+    <div id="container-body" class="container" style="background-color: white; color: black;">
+        <div id="menu_list" class="col-lg-12">
             <div>
                 {% if products %}
                     <div class="title bold">Your Basket</div>
@@ -211,10 +208,11 @@
 
                 <tr>
                     <td> TOTAL: £{{ total }} </td>
-                    <td><a class="btn btn-success btn-lg" id="btn-checkout" class="hvr-float">Checkout</a></td>
                 </tr>
 
             </table>
+
+                    <td><a class="btn btn-success btn-lg" id="btn-checkout" class="hvr-float">Checkout</a></td>
 
                 {% else %}
                     <div class="title bold">BASKET IS EMPTY</div>

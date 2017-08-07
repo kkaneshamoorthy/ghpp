@@ -24,10 +24,19 @@ def index(request):
 def menu(request):
     try:
         category = Category.objects.all()
-        product = Product.objects.all()
+
+        products = []
+
+        for cat in category:
+            catProduct = Product.objects.filter(category=cat.name)
+            productSerializer = ProductSerializer(catProduct, many=True)
+            products.append({cat : catProduct})
+
+        # product = Product.objects.all()
         context = {
             'category_list': category,
-            'product' : product,
+            # 'product' : product,
+            'products' : products
         }
 
         return render(request, 'website/menu.html', context)

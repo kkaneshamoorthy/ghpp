@@ -51,9 +51,6 @@
                         <a class="page-scroll" href="/menu">Menu</a>
                     </li>
                     <li>
-                        <a class="page-scroll" href="#contact">Contact Us</a>
-                    </li>
-                    <li>
                         <a class="basket" href="/basket"> My Basket <span class="glyphicon glyphicon-shopping-cart"/> </a>
                     </li>
                 </ul>
@@ -86,56 +83,45 @@
                 </ul>
             </div>
 
-            <div id="menu_list" class="col-lg-9">
+            <div id="menu_list" class="col-lg-9" style="color: black;">
                  <script>
                      var output = "";
-                        {% for category in category_list %}
-                            {% for product in product %}
-                                {% if product.category == category.name %}
-                                          $(document).ready( function() {
-                                            var request = new XMLHttpRequest();
-                                            request.onreadystatechange = function() {
-                                              if (this.readyState == 4) {
-                                                  var data = JSON.parse(request.response);
-                                                  output = "<h1 id='{{ category.sub_name }}'> {{ category.name }} </h1>";
-                                                  output += "<h5> {{ category.description }} </h5>";
-                                                  output += "<div class='panel panel-default' style='background-color: transparent'>";
-                                                  output += "<div class='panel-body' align='left'>";
+                     {% for data in products %}
+                         {% for category in data %} //category
+                             output += "<h1 id='{{ category.name }}'> {{ category.name }} </h1>";
+                             output += "<h5> {{ category.description }} </h5>";
+                             output += "<div class='panel panel-default' style='background-color: transparent'>";
+                             output += "<div class='panel-body' align='left'>";
 
-                                                  for (var i=0; i < data.length; i++) {
-                                                      var p = data[i];
-                                                      var productID = p.id;
-                                                      console.log(p.id);
-                                                      output += "<strong>" + p["name"] + "</strong> <br>";
-                                                      output += p["description"] + "<br>";
-                                                      output += "<table class='table'> <tr>";
+                             output += "<span style='color : black;'>";
 
-                                                      //display different size and their prices
-                                                      var portion = p["size"].split(";");
-                                                      for (var j=0; j<portion.length; j++) {
-                                                          var sizeData = portion[j].split(":");
+                             {% for key,value in data.items %} //product
+                                 {% for product in value %}
+                                    output += "<span class='product-name'>{{ product.name }} </span><br>";
+                                     {% if product.description != "NULL" %}
+                                        output += "{{ product.description }}<br>";
+                                     {% endif %}
+                                    output += "<table class='table'> <tr>";
 
-                                                          var addButtonID = productID+":"+sizeData[0]+":"+sizeData[1];
+                                    var portion = "{{ product.size }}".split(";");
+                                    for (var j=0; j<portion.length; j++) {
+                                        var sizeData = portion[j].split(":");
+                                        var addButtonID = {{ product.id }}+":"+sizeData[0]+":"+sizeData[1];
 
-                                                          output += "<td>" + sizeData[0 ] + "</td>";
-                                                          output += "<td>£"+ sizeData[1];
-                                                          output += "<a class='btn-add-basket' id='"+addButtonID+"' class='hvr-grow'> <span class='glyphicon glyphicon-plus-sign' aria-hidden='true'></span> </a> </td> </tr>";
-                                                      }
+                                        output += "<td>" + sizeData[0 ] + "</td>";
+                                        output += "<td>£"+ sizeData[1];
+                                        output += "<a class='btn-add-basket' id='"+addButtonID+"' class='hvr-grow'> <span class='glyphicon glyphicon-plus-sign' aria-hidden='true'></span> </a> </td> </tr>";
+                                    }
 
-                                                      output+="</table>";
-                                                  }
-                                                  output += "</div>"
+                                    output+="</table>";
+                                 {% endfor %}
+                             {% endfor %}
+                             output += " </span> </div> </div>";
+                         {% endfor %}
+                     {% endfor %}
 
-                                                  var panel = document.getElementById("menu_list");
-                                                  panel.innerHTML = panel.innerHTML + output;
-                                              }
-                                            };
-                                            request.open("GET", "/product/{{ product.category }}/", true);
-                                            request.send();
-                                          });
-                                {% endif %}
-                            {% endfor %}
-                        {% endfor %}
+                     var panel = document.getElementById("menu_list");
+                     panel.innerHTML = panel.innerHTML + output;
                 </script>
             </div>
         </div>
