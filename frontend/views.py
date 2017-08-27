@@ -8,8 +8,10 @@ from django.http import HttpResponseRedirect, HttpResponse, Http404, HttpRespons
 from .serializers import ProductSerializer
 from .serializers import CategorySerializer
 from .serializers import ProductExtrasSerializer
+from .serializers import OrderSerializer
 from .serializers import UtilitySerializer
 from .serializers import ExtraSerializer
+from frontend.models import Order
 import json
 from paypalrestsdk import Payment
 
@@ -76,6 +78,7 @@ def product(request, id):
 def add_product(request):
     if (request.method == 'POST'):
         product_id = request.POST.get("product_id")
+
         extraArr = []
         quantity = 1
 
@@ -118,6 +121,10 @@ def basket(request):
         extraTotal = 0
         extraData = []
         product = Product.objects.get(id=product_id) #get product
+        allowableSelection = 0;
+
+        if (product_id == "14"):
+            allowableSelection = 3
 
         if extraIds == '':
             extraData = []
@@ -125,7 +132,10 @@ def basket(request):
             for extraId in extraIds:
                 extra = Extras.objects.get(id=extraId)
                 extraData.append(extra)
-                extraTotal += extra.price
+                if (allowableSelection == 0):
+                    extraTotal += extra.price
+                else:
+                    allowableSelection -= 1
 
         price = float(product.price)
         productTotal = price + extraTotal+float(product_price)
@@ -277,10 +287,10 @@ def payment(request):
     context = {}
     if (request.method == 'POST'):
         checkout = request.session['checkout']
-        payment = checkout['payment']
-        delivery = checkout['delivery']
-        total = delivery['total']
-        #
+        paymentData = checkout['payment']
+        deliveryData = checkout['delivery']
+        total = deliveryData['total']
+
         # payment = Payment({
         #   "intent": "sale",
         #   "payer": {
@@ -313,24 +323,25 @@ def payment(request):
         #   }]
         # })
 
+
         payment = Payment({
             "intent": "sale",
             "payer": {
                 "payment_method": "credit_card",
                 "funding_instruments": [{
                     "credit_card": {
-                        "type": payment['card_type'],
-                        "number": payment['card_number'],
-                        "expire_month": payment['expiry_month'],
-                        "expire_year": payment['expiry_year'],
-                        "cvv2": payment['cvv'],
+                        "type": paymentData['card_type'], #"visa",
+                        "number":  paymentData['card_number'], #"4601044104515989",
+                        "expire_month": paymentData['expiry_month'], #"11",
+                        "expire_year": paymentData['expiry_year'], #"2018",
+                        "cvv2": paymentData['cvv'], #"874",
                         "first_name": "Joe",
                         "last_name": "Shopper",
                         "billing_address": {
-                            "line1": delivery['street'],#"52 N Main ST",
-                            "city": delivery['city'], #"Johnstown",
-                            "state": "OH",
-                            "postal_code": delivery['postcode'], #"43210",
+                            "line1": deliveryData['street'],#"52 N Main ST",
+                            "city": deliveryData['city'], #"Johnstown",
+                            #"state": "OH",
+                            "postal_code": deliveryData['postcode'], #"43210",
                             "country_code": "GB"
                         }
                     }
@@ -338,7 +349,7 @@ def payment(request):
             },
             "transactions": [{
                 "amount": {
-                    "total": total['total'],
+                    "total": total['total'], #"7.47",
                     "currency": "GBP"
                 },
                 "description": "This is the payment transaction description."
@@ -350,7 +361,29 @@ def payment(request):
             context = {"status" : "success", "message" : "Payment created successfully", 'data' : payment.id}
             request.session['basket'] = {}
             request.session['checkout'] = {}
+
+            order = Order(
+                product="",
+                total = float(total['total']),
+                paymentType = "Card",
+                deliveryType = "Collection",
+                address = "74 spit",
+                name = "Kowrishankar"
+            )
+            order.save()
+
         else:
             # Display Error message
             context = {"status" : "failed", "message" : "Error while creating payment:", "data" : payment.error}
     return render(request, 'website/ordered.html', context)
+
+def admin(request):
+    order = Order.objects.all()
+    serializer = OrderSerializer(order, many=True)
+
+    context = {
+        'orders' : serializer.data
+    }
+
+    return render(request, 'website/admin.html', context)
+    # return HttpResponse(json.dumps(serializer.data), content_type="application/json")

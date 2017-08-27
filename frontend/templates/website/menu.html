@@ -150,6 +150,11 @@
         var csrf = $('[name="csrfmiddlewaretoken"]').val();
         console.log(csrf);
 
+        String.prototype.replaceAll = function(search, replacement) {
+            var target = this;
+            return target.split(search).join(replacement);
+        };
+
         var addToBasket = function(){
             var extraToAdd = [];
             $(".btn-add-basket").click(function () {
@@ -162,13 +167,20 @@
                 var productSubname = productData[1];
                 var productPrice = productData[2];
                 dataOut = [];
+                var requiredSelection = 0;
+
+                if (productId == "14") {
+                    requiredSelection = 3;
+                }
 
                 var request = new XMLHttpRequest();
                 request.onreadystatechange = function() {
 
                     if (this.readyState == 4) {
-                        var data = request.response.replace("][", ",");
+                        console.log(request.response);
+                        var data = request.response.replaceAll("][", ",");
 
+                        //Get extra options from DB
                         if (request.response != "") {
                             jsonData = JSON.parse(data);
                             for (var i = 0; i < jsonData.length; i++) {
@@ -180,26 +192,39 @@
                                 dataOut.push({"text" : extra_name, "value" : id});
                             }
 
+                            if (requiredSelection > 0) {
+                                dialogTitle = "Select " + requiredSelection + " topics:";
+                            } else {
+                                dialogTitle = "Extra Options";
+                            }
+
+                            //display extra options
                             if (dataOut.length > 0) {
                                 bootbox.prompt({
-                                    title: "Extra Options",
+                                    title: dialogTitle,
                                     inputType: 'checkbox',
                                     inputOptions: dataOut,
                                     callback: function (result) {
 
                                         if (result != null) {
                                             var extraToAdd = "";
-
-                                            for (var k = 0; k < result.length; k++) {
+                                            var k =0;
+                                            for (k = 0; k < result.length; k++) {
                                                 extraToAdd += result[k];
-
                                                 if (k != result.length - 1)
                                                     extraToAdd += ",";
                                             }
 
-                                            console.log(extraToAdd);
-
-                                            console.log(productId + ":" + productSubname + ":" + productPrice + ":" + productData[3] + extraToAdd);
+                                            if (k > requiredSelection) {
+                                                bootbox.alert({
+                                                    message: "You have selected more than "+ requiredSelection + " topics. You will be charged for the extra topics.",
+                                                });
+                                            } else if (k == 0) {
+                                                bootbox.alert({
+                                                    message: "You have total of  "+ requiredSelection + " topics to choose. You have only chosen 0 topics. Product is not added to the basket. Please choose a topic",
+                                                });
+                                                return;
+                                            }
 
                                             $.ajax({
                                                 url: "/addproduct/",
@@ -210,8 +235,11 @@
                                                     'csrfmiddlewaretoken': csrf
                                                 },
                                                 success: function (result) {
-                                                    {#                                            location.reload();#}
                                                     console.log("added successfully");
+                                                    bootbox.alert({
+                                                        message: "The product has been added to the basket",
+                                                        backdrop: true
+                                                    });
                                                 }
                                             });
                                         }
@@ -230,6 +258,10 @@
                                 },
                                 success: function (result) {
                                     console.log("added successfully");
+                                        bootbox.alert({
+                                            message: "The product has been added to the basket",
+                                            backdrop: true
+                                        });
                                 }
                             });
                         }

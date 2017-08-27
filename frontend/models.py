@@ -25,3 +25,12 @@ class ProductExtras(models.Model):
 class UtilityData(models.Model):
     name = models.CharField(max_length=200)
     info = models.CharField(max_length=200)
+
+class Order(models.Model):
+    id = models.AutoField(primary_key=True)
+    product = models.CharField(max_length=3000)
+    total = models.FloatField()
+    paymentType = models.CharField(max_length=200)
+    deliveryType = models.CharField(max_length=200)
+    address = models.CharField(max_length=1000)
+    name = models.CharField(max_length=200)

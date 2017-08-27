@@ -34,4 +34,5 @@ urlpatterns = [
     url(r'^checkout/2/$', views.checkout_payment),
     url(r'^checkout/3/$', views.save_payment),
     url(r'^payment/$', views.payment),
+    url(r'^admin1/$', views.admin),
 ]
