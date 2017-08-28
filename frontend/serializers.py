@@ -39,3 +39,4 @@ class OrderSerializer(serializers.Serializer):
     address = serializers.CharField()
     deliveryType = serializers.CharField()
     paymentType = serializers.CharField()
+    status = serializers.CharField()

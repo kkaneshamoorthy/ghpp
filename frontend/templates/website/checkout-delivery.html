@@ -191,18 +191,18 @@
                             </div>
 
                             {% if payment_type == "card" %}
-                                <div id="delivery-charge"><h4> Card charge: £0.60p </h4></div>
+                                <div id="delivery-charge"><h4> Card charge: £{{ card_charge }}p </h4></div>
                                 <hr>
                             {% endif %}
                             {% if delivery_type == "delivery" %}
-                                <div id="delivery-charge"><h4> Delivery charge: £1.00p </h4></div>
-                                {{ delivery_charge }}
+                                <div id="delivery-charge"><h4> Delivery charge: £{{ delivery_charge }}p </h4></div>
                                 <hr>
                             {% endif %}
 
                             <div id="total"><h2>Total: £{{ total }} </h2></div>
                             <hr>
                             <div class="container">
+                                {% if payment_type == "card" %}
                                 <form id="paymentForm" method="post" action="/payment/">
                                     <fieldset>
                                         <div class="row">
@@ -219,6 +219,24 @@
                                         </div>
                                     </fieldset>
                                 </form>
+                                {% else %}
+                                <form id="paymentForm" method="post" action="/order/">
+                                    <fieldset>
+                                        <div class="row">
+                                            <div class="col col-lg-6">
+                                                <input onclick="stepnext(2);" value="Back" type="button" />
+                                            </div>
+                                            <div class="col col-lg-6">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="name" value="value" />
+                                                <a onclick="document.getElementById('paymentForm').submit();">
+                                                    <input id="order-now" onclick="stepnext(0);" value="Order Now" type="button" />
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </fieldset>
+                                </form>
+                                {% endif %}
                             </div>
                         </div>
                     </div>

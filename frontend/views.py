@@ -121,9 +121,9 @@ def basket(request):
         extraTotal = 0
         extraData = []
         product = Product.objects.get(id=product_id) #get product
-        allowableSelection = 0;
+        allowableSelection = 0
 
-        if (product_id == "14"):
+        if (product_id == 14):
             allowableSelection = 3
 
         if extraIds == '':
@@ -141,6 +141,8 @@ def basket(request):
         productTotal = price + extraTotal+float(product_price)
         products.append({'product': product, 'product_subname' : product_subname, 'price':productTotal, 'extras' : extraData, 'product_id' : key, 'quantity' : quantity})
         total += productTotal * quantity
+
+        total = round(total, 3)
 
     request.session['basket_total'] = total
     context = {'products':products, 'total' : total}
@@ -204,6 +206,8 @@ def checkout_delivery(request):
 
     basket = request.session['basket']
 
+    ordered_products = ""
+
     for key,value in basket.items():
         productData = key.split(":")
         product_id = int(productData[0])
@@ -214,6 +218,8 @@ def checkout_delivery(request):
         extraTotal = 0
         extraData = []
         product = Product.objects.get(id=product_id) #get product
+
+        ordered_products += product.name+" "+product_subname+ "; "
 
         if extraIds == '':
             extraData = []
@@ -228,16 +234,23 @@ def checkout_delivery(request):
         products.append({'product': product, 'product_subname' : product_subname, 'price':productTotal, 'extras' : extraData, 'product_id' : key, 'quantity' : quantity})
         total += productTotal * quantity
 
-    checkout = {'total' : total}
+    card_charge = UtilityData.objects.filter(name="card_charge")[0].info
+    delivery_charge = UtilityData.objects.filter(name="delivery_charge")[0].info
+
+    if deliveryType != "collection":
+        total = total + float(delivery_charge)
+    if payment_type != "cash":
+        total = total + float(card_charge)
+
+    total = round(total, 2)
+
+    checkout = {'total' : total, 'product' : ordered_products}
 
     request.session['checkout'] = checkout
     request.session['basket_total'] = total
 
-    card_charge = UtilitySerializer(UtilityData.objects.filter(name="card_charge"), many=True)
-    delivery_charge = UtilitySerializer(UtilityData.objects.filter(name="delivery_charge"), many=True)
-
     context = {'products': products, 'total': total, 'payment_title': paymentTitle, 'delivery_title': deliveryTitle, 'payment_type' : payment_type, 'delivery_type' : deliveryType,
-               'card_charge' : json.dumps(card_charge.data), 'delivery_charge' : json.dumps(delivery_charge.data)}
+               'card_charge' : card_charge, 'delivery_charge' : delivery_charge}
 
     return render(request, 'website/checkout-delivery.html', context)
 
@@ -291,39 +304,6 @@ def payment(request):
         deliveryData = checkout['delivery']
         total = deliveryData['total']
 
-        # payment = Payment({
-        #   "intent": "sale",
-        #   "payer": {
-        #     "payment_method": "credit_card",
-        #     "funding_instruments": [{
-        #       "credit_card": {
-        #         "type": payment['card_type'],
-        #         "number": payment['card_number'],
-        #         "expire_month": payment['expiry_month'],
-        #         "expire_year": payment['expiry_year'],
-        #         "cvv2": payment['cvv'],
-        #         "first_name": "Joe",
-        #         "last_name": "Shopper",
-        #         "billing_address": {
-        #           "line1": "52 N Main ST",
-        #           "city": "Johnstown",
-        #           "state": "OH",
-        #           "postal_code": "43210",
-        #           "country_code": "US"
-        #         }
-        #       }
-        #     }]
-        #   },
-        #   "transactions": [{
-        #     "amount": {
-        #       "total": total,
-        #       "currency": "GBP"
-        #     },
-        #     "description": "This is the payment transaction description."
-        #   }]
-        # })
-
-
         payment = Payment({
             "intent": "sale",
             "payer": {
@@ -358,23 +338,51 @@ def payment(request):
 
         # Create payment
         if payment.create():
-            context = {"status" : "success", "message" : "Payment created successfully", 'data' : payment.id}
-            request.session['basket'] = {}
-            request.session['checkout'] = {}
-
             order = Order(
-                product="",
+                product= deliveryData['total']['product'],
                 total = float(total['total']),
                 paymentType = "Card",
                 deliveryType = "Collection",
-                address = "74 spit",
-                name = "Kowrishankar"
+                address = deliveryData['street']+", "+deliveryData['city']+", "+deliveryData['postcode'],
+                name = "Kowrishankar",
+                status = "Order Received"
             )
             order.save()
+
+            context = {"orderStatus": "Order Received", "status": "success", "message": "Payment created successfully",
+                       'data': payment.id, "orderId" : order.id}
+            request.session['basket'] = {}
+            request.session['checkout'] = {}
 
         else:
             # Display Error message
             context = {"status" : "failed", "message" : "Error while creating payment:", "data" : payment.error}
+    return render(request, 'website/ordered.html', context)
+
+
+def order(request):
+    context = {}
+    if (request.method == 'POST'):
+        checkout = request.session['checkout']
+        paymentData = checkout['payment']
+        deliveryData = checkout['delivery']
+        total = deliveryData['total']
+
+        order = Order(
+            product= deliveryData['total']['product'],
+            total = float(total['total']),
+            paymentType = "Card",
+            deliveryType = "Collection",
+            address = deliveryData['street']+", "+deliveryData['city']+", "+deliveryData['postcode'],
+            name = "Kowrishankar",
+            status = "Order Received"
+        )
+        order.save()
+
+        context = {"status": "success", "orderStatus": "Order Received", "message": "Order created successfully", 'data': "", "orderId" : order.id}
+        request.session['basket'] = {}
+        request.session['checkout'] = {}
+
     return render(request, 'website/ordered.html', context)
 
 def admin(request):
@@ -387,3 +395,15 @@ def admin(request):
 
     return render(request, 'website/admin.html', context)
     # return HttpResponse(json.dumps(serializer.data), content_type="application/json")
+
+def changeOrderStatus(request):
+    if (request.method == "POST"):
+        newStatus = request.POST.get("status")
+        orderId = request.POST.get("orderId")
+
+        order = Order.objects.get(id=orderId)
+        order.status = newStatus
+        order.save()
+
+        return HttpResponse("status changed")
+    raise Http404

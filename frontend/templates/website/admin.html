@@ -71,12 +71,31 @@
         <div id="home" class="container" style="color: black;">
             <div class="row">
                 <div id="menu_list" class="col-lg-12">
-                    {% for order in orders %}
-                        {{ order.id }}
-                        {{ order.name }}
-                        {{ order.total }}
-                    {% endfor %}
-
+                    <table class='table'>
+                        <tr>
+                            <td>Order Id</td>
+                            <td>Name</td>
+                            <td>Product</td>
+                            <td>Payment Type</td>
+                            <td>Delivery</td>
+                            <td>Address</td>
+                            <td>Total</td>
+                            <td>Status</td>
+                        </tr>
+                        {% for order in orders %}
+                            <tr>
+                                <td> {{ order.id }} </td>
+                                <td> {{ order.name }} </td>
+                                <td> {{ order.product }} </td>
+                                <td> {{ order.paymentType }} </td>
+                                <td> {{ order.deliveryType }} </td>
+                                <td> {{ order.address }} </td>
+                                <td> {{ order.total }} </td>
+                                <td> {{ order.status }} </td>
+                                <td> <a class="editOrder"  id="{{ order.id }}"> <span class="glyphicon glyphicon-pencil"/> </a></td>
+                            </tr>
+                        {% endfor %}
+                    </table>
                 </div>
             </div>
         </div>
@@ -96,6 +115,55 @@
     <script src="{% static 'js/scrolling-nav.js' %}"></script>
     <script src="{% static 'js/slippry.min.js' %}"></script>
     <script src="{% static 'js/bootbox.min.js' %}"></script>
+
+    <script>
+
+        var csrf = $('[name="csrfmiddlewaretoken"]').val();
+
+        $(".editOrder").click(function () {
+            var orderId = this.id;
+
+            bootbox.prompt({
+                title: "Change order status",
+                inputType: 'select',
+                inputOptions: [
+                    {
+                        text: 'Order Received',
+                        value: 'Order Received',
+                    },
+                    {
+                        text: 'Cooking',
+                        value: 'Cooking',
+                    },
+                    {
+                        text: 'Ready',
+                        value: 'Ready',
+                    },
+                    {
+                        text: 'Collected or Delivered',
+                        value: 'Collected/Delivered',
+                    }
+                ],
+                callback: function (result) {
+                    console.log(result);
+
+                    $.ajax({
+                        url: "/changeOrder/",
+                        type: "POST",
+                        data: {'orderId': orderId, 'status': result, 'csrfmiddlewaretoken' : csrf},
+                        success: function (result) {
+                            console.log("order status saved");
+                            location.reload();
+                        },
+                        error: function (xmlHttpRequest, textStatus, errorThrown) {
+                             alert(errorThrown);
+                        }
+                    });
+
+                }
+            });
+        });
+    </script>
 
 </body>
 

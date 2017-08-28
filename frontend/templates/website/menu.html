@@ -88,7 +88,7 @@
                      var output = "";
                      {% for data in products %}
                          {% for category in data %} //category
-                             output += "<h1 id='{{ category.name }}'> {{ category.name }} </h1>";
+                             output += "<h1 id='{{ category.sub_name }}'> {{ category.name }} </h1>";
                              output += "<h5> {{ category.description }} </h5>";
                              output += "<div class='panel panel-default' style='background-color: transparent'>";
                              output += "<div class='panel-body' align='left'>";
@@ -189,7 +189,7 @@
                                 extra_name = extraData.name;
                                 extra_price = extraData.price;
 
-                                dataOut.push({"text" : extra_name, "value" : id});
+                                dataOut.push({"text" : extra_name+" - £" + extra_price, "value" : id});
                             }
 
                             if (requiredSelection > 0) {
@@ -205,45 +205,51 @@
                                     inputType: 'checkbox',
                                     inputOptions: dataOut,
                                     callback: function (result) {
-
                                         if (result != null) {
                                             var extraToAdd = "";
-                                            var k =0;
-                                            for (k = 0; k < result.length; k++) {
-                                                extraToAdd += result[k];
-                                                if (k != result.length - 1)
+                                            var selectedOptions = 0;
+                                            for (selectedOptions = 0; selectedOptions < result.length; selectedOptions++) {
+                                                extraToAdd += result[selectedOptions];
+                                                if (selectedOptions != result.length - 1)
                                                     extraToAdd += ",";
                                             }
 
-                                            if (k > requiredSelection) {
+                                            if (selectedOptions > requiredSelection) { //selecting more toppings
+{#                                                bootbox.alert({#}
+{#                                                    message: "You have selected more than "+ requiredSelection + " toppings. You will be charged for the extra topics.",#}
+{#                                                });#}
+                                            } else if (selectedOptions == 0 && requiredSelection > 0) {
                                                 bootbox.alert({
-                                                    message: "You have selected more than "+ requiredSelection + " topics. You will be charged for the extra topics.",
-                                                });
-                                            } else if (k == 0) {
-                                                bootbox.alert({
-                                                    message: "You have total of  "+ requiredSelection + " topics to choose. You have only chosen 0 topics. Product is not added to the basket. Please choose a topic",
+                                                    message: "You have total of  "+ requiredSelection + " toppings to choose. You have chosen 0 toppings. Product is not added to the basket. Please choose a topping",
                                                 });
                                                 return;
+                                            }
+
+                                            if (selectedOptions != 0) {
+                                                dataToPost = {
+                                                    'product_id': productId + ":" + productSubname + ":" + productPrice + ":" + productData[3] + extraToAdd,
+                                                    'extras_id': extraToAdd,
+                                                    'csrfmiddlewaretoken': csrf
+                                                };
+                                            } else {
+                                                dataToPost = {
+                                                    'product_id': productId + ":" + productSubname + ":" + productPrice + ":" + productData[3] + extraToAdd, 'csrfmiddlewaretoken': csrf
+                                                };
                                             }
 
                                             $.ajax({
                                                 url: "/addproduct/",
                                                 type: 'POST',
-                                                data: {
-                                                    'product_id': productId + ":" + productSubname + ":" + productPrice + ":" + productData[3] + extraToAdd,
-                                                    'extras_id': extraToAdd,
-                                                    'csrfmiddlewaretoken': csrf
-                                                },
+                                                data: dataToPost,
                                                 success: function (result) {
                                                     console.log("added successfully");
                                                     bootbox.alert({
-                                                        message: "The product has been added to the basket",
+                                                        message: "Product added to the Basket",
                                                         backdrop: true
                                                     });
                                                 }
                                             });
                                         }
-
                                     }
                                 });
                             }
