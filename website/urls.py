@@ -37,4 +37,8 @@ urlpatterns = [
     url(r'^order/$', views.order),
     url(r'^admin1/$', views.admin),
     url(r'^changeOrder/$', views.changeOrderStatus),
+    url(r'^myAccount/$', views.account),
+    url(r'^login/$', views.login),
+    url(r'^register/$', views.register),
+    url(r'^checkEmailAvailable/$', views.checkEmailAvailable),
 ]

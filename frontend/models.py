@@ -35,3 +35,14 @@ class Order(models.Model):
     address = models.CharField(max_length=1000)
     name = models.CharField(max_length=200)
     status = models.CharField(max_length=200)
+
+class User(models.Model):
+    id = models.AutoField(primary_key=True)
+    first_name = models.CharField(max_length=200)
+    last_name = models.CharField(max_length=200)
+    phone = models.CharField(max_length=200)
+    street = models.CharField(max_length=200)
+    city = models.CharField(max_length=200)
+    postcode = models.CharField(max_length=200)
+    password = models.CharField(max_length=200)
+    email = models.EmailField()

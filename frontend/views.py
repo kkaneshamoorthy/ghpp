@@ -4,6 +4,7 @@ from frontend.models import Category
 from frontend.models import ProductExtras
 from frontend.models import Extras
 from frontend.models import UtilityData
+from frontend.models import User
 from django.http import HttpResponseRedirect, HttpResponse, Http404, HttpResponseBadRequest
 from .serializers import ProductSerializer
 from .serializers import CategorySerializer
@@ -406,4 +407,68 @@ def changeOrderStatus(request):
         order.save()
 
         return HttpResponse("status changed")
+    raise Http404
+
+def account(request):
+    context = {'status' : ""}
+    return render(request, 'website/account.html', context)
+
+def login(request):
+    if (request.method == 'POST'):
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+
+        try:
+            user = User.objects.get(email=email)
+            context = {}
+
+            if user is not None:
+                if user.password == password:
+                    request.session['email'] = email
+                    request.session['user_id'] = user.id
+
+                    context = {'status' : "success", 'message' : "You have successfully logged in", 'email' : email}
+        except User.DoesNotExist:
+            context = {'status': "failed", 'message': "Username or password is incorrect"}
+
+        return render(request, 'website/account.html', context)
+    raise Http404
+
+def register(request):
+    if (request.method == "POST"):
+        first_name = request.POST.get('first_name')
+        last_name = request.POST.get('last_name')
+        phone = request.POST.get('phone')
+        street = request.POST.get('street')
+        city = request.POST.get('city')
+        postcode = request.POST.get('postcode')
+        password = request.POST.get('password')
+        email = request.POST.get('email')
+
+        user = User(
+            first_name = first_name,
+            last_name = last_name,
+            phone = phone,
+            street = street,
+            city = city,
+            postcode = postcode,
+            password = password,
+            email = email
+        )
+
+        user.save()
+
+        return render(request, 'website/account.html', context={'status' : "", 'message' : 'Account is created successfully'})
+    raise Http404
+
+def checkEmailAvailable(request):
+    if (request.method == "POST"):
+        email = request.POST.get("email")
+
+        try:
+            user = User.objects.get(email=email)
+            if user is not None:
+                return HttpResponse("unavailable")
+        except User.DoesNotExist:
+            return HttpResponse("available")
     raise Http404
