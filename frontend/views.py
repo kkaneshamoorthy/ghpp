@@ -5,8 +5,9 @@ from frontend.models import ProductExtras
 from frontend.models import Extras
 from frontend.models import UtilityData
 from frontend.models import User
+from frontend.models import Order
 from django.http import HttpResponseRedirect, HttpResponse, Http404, HttpResponseBadRequest
-from .serializers import ProductSerializer
+from .serializers import ProductSerializer, UserSerializer
 from .serializers import CategorySerializer
 from .serializers import ProductExtrasSerializer
 from .serializers import OrderSerializer
@@ -365,6 +366,7 @@ def order(request):
     context = {}
     if (request.method == 'POST'):
         checkout = request.session['checkout']
+        email = request.session['account']['email']
         paymentData = checkout['payment']
         deliveryData = checkout['delivery']
         total = deliveryData['total']
@@ -376,7 +378,8 @@ def order(request):
             deliveryType = "Collection",
             address = deliveryData['street']+", "+deliveryData['city']+", "+deliveryData['postcode'],
             name = "Kowrishankar",
-            status = "Order Received"
+            status = "Order Received",
+            email = email
         )
         order.save()
 
@@ -410,29 +413,47 @@ def changeOrderStatus(request):
     raise Http404
 
 def account(request):
-    context = {'status' : ""}
+    context = {'orders' : None}
+
+    if 'account' in request.session:
+        email = request.session['account']['email']
+        userOrders = Order.objects.filter(email=email)
+        userSerializer = OrderSerializer(userOrders, many=True)
+
+        context = {'orders' : userSerializer.data}
+
     return render(request, 'website/account.html', context)
+    #
+    # return HttpResponse((userSerializer.data))
 
 def login(request):
     if (request.method == 'POST'):
         email = request.POST.get('email')
         password = request.POST.get('password')
-
         try:
-            user = User.objects.get(email=email)
-            context = {}
+            user = User.objects.get(email=email, password = password)
+            serializer = UserSerializer(user, many=False)
+            request.session['account'] = serializer.data
 
-            if user is not None:
-                if user.password == password:
-                    request.session['email'] = email
-                    request.session['user_id'] = user.id
-
-                    context = {'status' : "success", 'message' : "You have successfully logged in", 'email' : email}
+            return HttpResponseRedirect('/')
         except User.DoesNotExist:
             context = {'status': "failed", 'message': "Username or password is incorrect"}
+            return render(request, 'website/account.html/', context)
 
-        return render(request, 'website/account.html', context)
+            # if user is not None:
+            #     if user.password == password:
+            #         request.session['email'] = email
+            #         request.session['user_id'] = user.id
+            #
+            #         context = {'status' : "success", 'message' : "You have successfully logged in", 'email' : email}
+        # except User.DoesNotExist:
+        #     context = {'status': "failed", 'message': "Username or password is incorrect"}
     raise Http404
+
+def logout(request):
+    if (request.method == 'GET'):
+        del request.session['account']
+    return HttpResponseRedirect("/")
 
 def register(request):
     if (request.method == "POST"):
@@ -463,12 +484,39 @@ def register(request):
 
 def checkEmailAvailable(request):
     if (request.method == "POST"):
-        email = request.POST.get("email")
+        emailAddress = request.POST.get("email")
 
-        try:
-            user = User.objects.get(email=email)
-            if user is not None:
-                return HttpResponse("unavailable")
-        except User.DoesNotExist:
+        userCount = User.objects.filter(email=emailAddress).count()
+
+        if userCount == 0:
             return HttpResponse("available")
+        else:
+            return HttpResponse("unavailable")
+    raise Http404
+
+def loggedInUserdata(request):
+    return HttpResponse(json.dumps(request.session['account']), content_type="application/json")
+
+def editPersonalDetails(request):
+    if (request.method == "POST"):
+        first_name = request.POST.get('edited-first-name')
+        last_name = request.POST.get('edited-last-name')
+        phone = request.POST.get('edited-phone')
+        street = request.POST.get('edited-street')
+        city = request.POST.get('edited-city')
+        postcode = request.POST.get('edited-postcode')
+        emailAddress = request.POST.get('edited-email')
+
+        user = User.objects.get(email=emailAddress)
+
+        user.phone = phone
+        user.street = street
+        user.city = city
+        user.postcode = postcode
+        user.first_name = first_name
+        user.last_name = last_name
+
+        user.save()
+
+        return HttpResponseRedirect("/account/")
     raise Http404

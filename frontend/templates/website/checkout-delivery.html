@@ -54,8 +54,13 @@
                         <a class="page-scroll" href="/basket"> My Basket <span class="glyphicon glyphicon-shopping-cart"/> </a>
                     </li>
                     <li>
-                        <a class="page-scroll" href="/myAccount"> My Account <span class="glyphicon glyphicon glyphicon-user" /> </a>
+                        <a class="page-scroll" href="/account"> My Account <span class="glyphicon glyphicon glyphicon-user" /> </a>
                     </li>
+                    {% if request.session.account is not None %}
+                    <li>
+                        <a class="page-scroll" href="/logout"> Logout <span class="glyphicon glyphicon-log-out" /> </a>
+                    </li>
+                    {% endif %}
                 </ul>
 
                 <form class="navbar-form navbar-right" role="search">
@@ -264,6 +269,26 @@
     <script src="{% static 'js/bootbox.min.js' %}"></script>
 
     <script>
+
+        $.ajax({
+            url : "/loggedin-user/",
+            type : "GET",
+            success : function (result) {
+                first_name = result['first_name'];
+                last_name = result['last_name'];
+                phone = result['phone'];
+                street = result['street'];
+                city = result['city'];
+                postcode = result['postcode'];
+
+                $("#name").val(first_name + " " + last_name);
+                $("#phone-number").val(phone);
+                $("#street").val(street);
+                $("#city").val(city);
+                $("#postcode").val(postcode);
+            }
+        });
+
         var csrf = $('[name="csrfmiddlewaretoken"]').val();
 
         $("#delivery_details_btn").click(function () {

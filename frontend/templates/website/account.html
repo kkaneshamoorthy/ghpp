@@ -54,8 +54,13 @@
                         <a class="page-scroll" href="/basket"> My Basket <span class="glyphicon glyphicon-shopping-cart"/> </a>
                     </li>
                     <li>
-                        <a class="page-scroll" href="/myAccount"> My Account <span class="glyphicon glyphicon glyphicon-user" /> </a>
+                        <a class="page-scroll" href="/account"> My Account <span class="glyphicon glyphicon glyphicon-user" /> </a>
                     </li>
+                    {% if request.session.account is not None %}
+                    <li>
+                        <a class="page-scroll" href="/logout"> Logout <span class="glyphicon glyphicon-log-out" /> </a>
+                    </li>
+                    {% endif %}
                 </ul>
 
                 <form class="navbar-form navbar-right" role="search">
@@ -73,14 +78,14 @@
         <div class="container">
             <div class="container">
 
-            {% if status == "" or status == "failed" %}
+            {% if request.session.account is None %}
                 <div class="row">
                 <div class="col-md-6 col-md-offset-3">
                   <div class="panel panel-login">
                     <div class="panel-body">
                       <div class="row">
                         <div class="col-lg-12">
-                          <form id="login-form" action="/login/" method="post" role="form" style="display: block;">
+                          <form id="login-form" action="/login/" method="post" role="form" onsubmit="return checkLoginForm()" style="display: block;">
                                {% csrf_token %}
                             <h2>LOGIN</h2>
 
@@ -95,17 +100,17 @@
                               {% endif %}
 
                               <div class="form-group">
-                                <input type="email" name="email" id="email" tabindex="1" class="form-control" placeholder="Email" value="">
+                                <input type="email" name="email" id="login-email" tabindex="1" class="form-control" placeholder="Email" value="">
                               </div>
                               <div class="form-group">
-                                <input type="password" name="password" id="password" tabindex="2" class="form-control" placeholder="Password">
+                                <input type="password" name="password" id="login-password" tabindex="2" class="form-control" placeholder="Password">
                               </div>
                               <div class="col-xs-6 form-group pull-right">
                                     <input type="submit" name="login-submit" id="login-submit" tabindex="4" class="form-control btn btn-login" value="Log In">
                               </div>
                           </form>
 
-                          <form id="register-form" action="/register/" method="post" role="form" style="display: none;" onSubmit="return checkform()">
+                          <form id="register-form" action="/register/" method="post" role="form" style="display: none;" onSubmit="return checkRegisterForm()">
                                {% csrf_token %}
                             <h2>REGISTER</h2>
                               <p id="validationMessage"> </p>
@@ -116,7 +121,7 @@
                                 <input type="text" name="last_name" id="last_name" tabindex="1" class="form-control" placeholder="Last Name" value="">
                               </div>
                               <div class="form-group">
-                                <input type="email" name="email" id="email" tabindex="1" class="form-control" placeholder="Email Address" value="">
+                                  <input type="email" name="email" id="email" tabindex="1" class="form-control" placeholder="Email Address" value="">
                               </div>
                               <div class="form-group">
                                 <input type="password" name="password" id="password" tabindex="2" class="form-control" placeholder="Password">
@@ -161,27 +166,95 @@
                 </div>
             </div>
             {% else %}
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="form-style-5">
+                            <form method="POST" action="/editPersonalDetails/">
+                                {% csrf_token %}
+                                <fieldset>
+                                    <legend><span class="number">1</span> EDIT YOUR DETAILS </legend>
+                                        First Name: <input
+                                                value="{{ request.session.account.first_name }}"
+                                                type="text"
+                                                name="edited-first-name"
+                                                class="placeholder-override-input"
+                                                id="edited-first-name"
+                                                required autocomplete="off" />
 
-            <div class="row">
-                <div class="col-lg-6">
-                    Personal Details
+                                        Last Name: <input
+                                                value="{{ request.session.account.last_name }}"
+                                                type="text"
+                                                name="edited-last-name"
+                                                class="placeholder-override-input"
+                                                id="edited-last-name"
+                                                required autocomplete="off" />
+                                        Phone: <input
+                                                value="{{ request.session.account.phone }}"
+                                                name="edited-phone"
+                                                type="text"
+                                                class="placeholder-override-input"
+                                                required autocomplete="off">
+                                        Email Address: <input
+                                                value="{{ request.session.account.email }}"
+                                                type="text"
+                                                name="edited-email"
+                                                readonly
+                                                class="placeholder-override-input"
+                                                required autocomplete="off">
+                                </fieldset>
+                                <fieldset>
+                                    <legend><span class="number">2</span> EDIT YOUR ADDRESS </legend>
+                                        Street Name: <input
+                                                value="{{ request.session.account.street }}"
+                                                type="text"
+                                                name="edited-street"
+                                                id="edited-street"
+                                                class="placeholder-override-input">
+                                        Postcode: <input
+                                                value="{{ request.session.account.postcode  }}"
+                                                type="text"
+                                                name="edited-postcode"
+                                                class="placeholder-override-input">
+                                        City: <input
+                                                value="{{ request.session.account.city }}"
+                                                type="text"
+                                                name="edited-city"
+                                                class="placeholder-override-input">
+                                </fieldset>
+                                <input id="edit_details_btn" type="submit" value="Save"/>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="form-style-5">
+                            <fieldset>
+                                <legend><span class="number">1</span> MY ORDER </legend>
+                                <table class='table'>
+                                    <tr>
+                                        <td>Order Id</td>
+                                        <td>Product</td>
+                                        <td>Payment Type</td>
+                                        <td>Delivery</td>
+                                        <td>Address</td>
+                                        <td>Total</td>
+                                        <td>Status</td>
+                                    </tr>
+                                    {% for order in orders %}
+                                        <tr>
+                                            <td> {{ order.id }} </td>
+                                            <td> {{ order.product }} </td>
+                                            <td> {{ order.paymentType }} </td>
+                                            <td> {{ order.deliveryType }} </td>
+                                            <td> {{ order.address }} </td>
+                                            <td> {{ order.total }} </td>
+                                            <td> {{ order.status }} </td>
+                                        </tr>
+                                    {% endfor %}
+                                </table>
+                            </fieldset>
+                        </div>
+                    </div>
                 </div>
-
-                <div class="col-lg-6">
-                    Payment Details
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-lg-6">
-                    View Orders
-                </div>
-
-                <div class="col-lg-6">
-                    Payment Details
-                </div>
-            </div>
-
             {% endif %}
 
             </div>
@@ -203,7 +276,51 @@
     <script src="{% static 'js/bootbox.min.js' %}"></script>
 
     <script>
-        function checkform() {
+        function checkLoginForm() {
+            var email = $('#login-email').val();
+            var password = $('#login-password').val();
+
+            if (email == "") {
+                document.getElementById('login-email').style.border = "red solid 3px";
+                document.getElementById('validationMessage').innerHTML = "<div class='alert alert-danger' role='alert'> Please enter your E-mail address </div>";
+
+                return false;
+            }
+
+            if (password == "") {
+                document.getElementById('login-password').style.border = "red solid 3px";
+                document.getElementById('validationMessage').innerHTML = "<div class='alert alert-danger' role='alert'> Please enter your Password</div>";
+
+                return false;
+            }
+
+            return true;
+        }
+
+        function checkEmailAvailability(email, csrf) {
+            var isAvailable = false;
+
+            $.ajax({
+                url: "/checkEmailAvailable/",
+                type: 'POST',
+                async: false,
+                data: {
+                    'email' : email,
+                    'csrfmiddlewaretoken': csrf
+                },
+                success: function (result) {
+                    if (result === "available") {
+                        isAvailable = true;
+                    } else {
+                        isAvailable = false;
+                    }
+                }
+            });
+
+            return isAvailable;
+        }
+
+        function checkRegisterForm() {
             var csrf = $('[name="csrfmiddlewaretoken"]').val();
 
             var password = $('#password').val();
@@ -215,6 +332,14 @@
             var first_name = $('#first_name').val();
             var last_name = $('#last_name').val();
             var phone = $('#phone').val();
+
+            var isAvailable = checkEmailAvailability(email, csrf);
+
+            if (!isAvailable) {
+                document.getElementById('validationMessage').innerHTML = "<div class='alert alert-danger' role='alert'> Account with the email address already exists </div>";
+
+                return false;
+            }
 
             if (password != confirm_password) {
                 document.getElementById('password').style.border = "red solid 3px";
@@ -287,35 +412,8 @@
                 return false;
             }
 
-{##}
-{#            $.ajax({#}
-{#                url : "/checkEmailAvailable/",#}
-{#                type : "POST",#}
-{#                data : {'email' : email},#}
-{#                success : function(result) {#}
-{#                    alert(result);#}
-{#                }#}
-{#            });#}
-
-            var request = new XMLHttpRequest();
-            request.onreadystatechange = function() {
-                if (this.readyState == 4) {
-                    alert(request.response);
-                    if (request.response == "available") {
-                        return true;
-                    } else {
-                        return false;
-                    }
-                }
-            };
-            request.open("POST", "/checkEmailAvailable/", true);
-            request.setRequestHeader('X-CSRFToken', csrf);
-            request.send({'email' : email});
-
+            return true;
         }
     </script>
-
-
 </body>
-
 </html>

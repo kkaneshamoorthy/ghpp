@@ -37,8 +37,11 @@ urlpatterns = [
     url(r'^order/$', views.order),
     url(r'^admin1/$', views.admin),
     url(r'^changeOrder/$', views.changeOrderStatus),
-    url(r'^myAccount/$', views.account),
+    url(r'^account/$', views.account),
     url(r'^login/$', views.login),
+    url(r'^logout/$', views.logout),
     url(r'^register/$', views.register),
     url(r'^checkEmailAvailable/$', views.checkEmailAvailable),
+    url(r'^loggedin-user/$', views.loggedInUserdata),
+    url(r'^editPersonalDetails/$', views.editPersonalDetails),
 ]

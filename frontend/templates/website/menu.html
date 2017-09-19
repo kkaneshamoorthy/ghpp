@@ -54,8 +54,13 @@
                         <a class="basket" href="/basket"> My Basket <span class="glyphicon glyphicon-shopping-cart"/> </a>
                     </li>
                     <li>
-                        <a class="page-scroll" href="/myAccount"> My Account <span class="glyphicon glyphicon glyphicon-user" /> </a>
+                        <a class="page-scroll" href="/account"> My Account <span class="glyphicon glyphicon glyphicon-user" /> </a>
                     </li>
+                    {% if request.session.account is not None %}
+                    <li>
+                        <a class="page-scroll" href="/logout"> Logout <span class="glyphicon glyphicon-log-out" /> </a>
+                    </li>
+                    {% endif %}
                 </ul>
 
                 <form class="navbar-form navbar-right" role="search">

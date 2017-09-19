@@ -5,6 +5,7 @@ from .models import Extras
 from .models import ProductExtras
 from .models import UtilityData
 from .models import Order
+from .models import User
 
 class CategorySerializer(serializers.Serializer):
     name = serializers.CharField(read_only=True)
@@ -40,3 +41,14 @@ class OrderSerializer(serializers.Serializer):
     deliveryType = serializers.CharField()
     paymentType = serializers.CharField()
     status = serializers.CharField()
+    email = serializers.CharField()
+
+class UserSerializer(serializers.Serializer):
+    id = serializers.CharField()
+    first_name = serializers.CharField()
+    last_name = serializers.CharField()
+    phone = serializers.CharField()
+    street = serializers.CharField()
+    city = serializers.CharField()
+    postcode = serializers.CharField()
+    email = serializers.CharField()
