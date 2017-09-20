@@ -274,6 +274,11 @@
         });
 
         $("#btn-checkout").click(function() {
+
+            {% if request.session.account is None %}
+                window.location.replace("/account/");
+            {% endif %}
+
             var delivery = bootbox.dialog({
                 title: 'Delivery Option',
                 message: "<p>Choose your Delivery option.</p>",

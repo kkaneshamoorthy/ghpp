@@ -301,6 +301,21 @@
             var country = $("#country").val();
             var phone = $("#phone-number").val();
 
+            $.ajax({
+                url : "/check-delivery-radius/",
+                type : "POST",
+                data : {'postcode' : postcode, 'csrfmiddlewaretoken' : csrf},
+                success : function (result) {
+                    if (result == "invalid") {
+                        alert("Postcode is outside the delivery mileage. Sorry cant be delivered, but can be collected from the shop.");
+                        window.location.replace("/account/");
+                    }
+                },
+                error: function (xmlHttpRequest, textStatus, errorThrown) {
+                     alert(errorThrown);
+                }
+            });
+
             var element = document.getElementById("address");
             element.innerHTML = "<strong> {{ delivery_title }}: </strong>" + "<br/> Name: " + name + " <br/> Street: " + street + "<br/> Postcode: " + postcode + " <br/> City: " + city + " <br/> Country: " + country + " <br/> Phone: " + phone;
 

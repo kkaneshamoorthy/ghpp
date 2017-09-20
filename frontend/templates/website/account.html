@@ -166,8 +166,48 @@
                 </div>
             </div>
             {% else %}
-                <div class="row">
-                    <div class="col-lg-6">
+                <div class="jumbotron">
+                  <h1>My Account</h1>
+                  <p>
+                      <input class="btn btn-primary btn-lg" id="edit_details_btn" onclick="showEditDetails()" type="submit" value="Edit Details"/>
+                      <input class="btn btn-primary btn-lg"  id="show_orders_btn" onclick="showOrders()" type="submit" value="Show Orders"/>
+                  </p>
+                </div>
+
+                <div class="row" id="showOrders_div" style="display: none;">
+                    <div class="col-lg-12">
+                        <div class="form-style-6">
+                            <fieldset>
+                                <h2> MY ORDER </h2>
+                                <table class='table'>
+                                    <tr>
+                                        <td>Order Id</td>
+                                        <td>Product</td>
+                                        <td>Payment Type</td>
+                                        <td>Delivery</td>
+                                        <td>Address</td>
+                                        <td>Total</td>
+                                        <td>Status</td>
+                                    </tr>
+                                    {% for order in orders %}
+                                        <tr>
+                                            <td> {{ order.id }} </td>
+                                            <td> {{ order.product }} </td>
+                                            <td> {{ order.paymentType }} </td>
+                                            <td> {{ order.deliveryType }} </td>
+                                            <td> {{ order.address }} </td>
+                                            <td> {{ order.total }} </td>
+                                            <td> {{ order.status }} </td>
+                                        </tr>
+                                    {% endfor %}
+                                </table>
+                            </fieldset>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row" id="editPersonalDetails_div" style="display: none;">
+                    <div class="col-lg-12">
                         <div class="form-style-5">
                             <form method="POST" action="/editPersonalDetails/">
                                 {% csrf_token %}
@@ -225,35 +265,6 @@
                             </form>
                         </div>
                     </div>
-                    <div class="col-lg-6">
-                        <div class="form-style-5">
-                            <fieldset>
-                                <legend><span class="number">1</span> MY ORDER </legend>
-                                <table class='table'>
-                                    <tr>
-                                        <td>Order Id</td>
-                                        <td>Product</td>
-                                        <td>Payment Type</td>
-                                        <td>Delivery</td>
-                                        <td>Address</td>
-                                        <td>Total</td>
-                                        <td>Status</td>
-                                    </tr>
-                                    {% for order in orders %}
-                                        <tr>
-                                            <td> {{ order.id }} </td>
-                                            <td> {{ order.product }} </td>
-                                            <td> {{ order.paymentType }} </td>
-                                            <td> {{ order.deliveryType }} </td>
-                                            <td> {{ order.address }} </td>
-                                            <td> {{ order.total }} </td>
-                                            <td> {{ order.status }} </td>
-                                        </tr>
-                                    {% endfor %}
-                                </table>
-                            </fieldset>
-                        </div>
-                    </div>
                 </div>
             {% endif %}
 
@@ -276,6 +287,29 @@
     <script src="{% static 'js/bootbox.min.js' %}"></script>
 
     <script>
+
+        function showEditDetails() {
+            var personalDiv = document.getElementById("editPersonalDetails_div");
+            var orderDiv = document.getElementById("showOrders_div");
+            if (personalDiv.style.display == "none") {
+                orderDiv.style.display = "none";
+                personalDiv.style.display = "block";
+            } else {
+                personalDiv.style.display = "none";
+            }
+        }
+
+        function showOrders() {
+            var personalDiv = document.getElementById("editPersonalDetails_div");
+            var orderDiv = document.getElementById("showOrders_div");
+            if (orderDiv.style.display == "none") {
+                personalDiv.style.display = "none";
+                orderDiv.style.display = "block";
+
+            } else
+                orderDiv.style.display = "none";
+        }
+
         function checkLoginForm() {
             var email = $('#login-email').val();
             var password = $('#login-password').val();

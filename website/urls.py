@@ -44,4 +44,5 @@ urlpatterns = [
     url(r'^checkEmailAvailable/$', views.checkEmailAvailable),
     url(r'^loggedin-user/$', views.loggedInUserdata),
     url(r'^editPersonalDetails/$', views.editPersonalDetails),
+    url(r'^check-delivery-radius/$', views.checkDeliveryRadius),
 ]

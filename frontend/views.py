@@ -520,3 +520,17 @@ def editPersonalDetails(request):
 
         return HttpResponseRedirect("/account/")
     raise Http404
+
+def checkDeliveryRadius(request):
+    if (request.method == "POST"):
+        userPostcode = request.POST.get('postcode').upper()
+
+        validPostcode = ['MK1', 'MK2', 'MK3', 'MK4', 'MK5', 'MK6', 'MK7', 'MK8',
+                         'MK9', 'MK10', 'MK11', 'MK12', 'MK13', 'MK14', 'MK15',
+                         'MK16', 'MK19']
+
+        for postcode in validPostcode:
+            if (userPostcode.startswith(postcode)):
+                return HttpResponse("valid")
+        return HttpResponse("invalid")
+    raise Http404
