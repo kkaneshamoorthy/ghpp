@@ -2,13 +2,12 @@
     font-size: large;
     font-weight:normal;color:#000000;letter-spacing:1pt;word-spacing:2pt;text-align:left;font-family:georgia, serif;line-height:2;
     font-family: Baskerville,Baskerville Old Face,Hoefler Text,Garamond,Times New Roman,serif;
-    color: white;
 }
 
-#btn-add-basket {
-    cursor: pointer;
-    width: 6%;
-}
+/*#btn-add-basket {*/
+    /*cursor: pointer;*/
+    /*width: 6%;*/
+/*}*/
 
 #btn-checkout {
     position: absolute;
@@ -71,9 +70,9 @@
 
 }
 
-#home-background {
-    background: url("https://c1.staticflickr.com/3/2918/14195226791_618e286e59_b.jpg");
-}
+/*#home-background {*/
+    /*background: url("https://c1.staticflickr.com/3/2918/14195226791_618e286e59_b.jpg");*/
+/*}*/
 
 .form-style-5{
     max-width: 500px;
@@ -101,14 +100,17 @@
 .form-style-5 fieldset{
     border: none;
 }
+
 .form-style-5 legend {
     font-size: 1.4em;
     margin-bottom: 10px;
 }
+
 .form-style-5 label {
     display: block;
     margin-bottom: 8px;
 }
+
 .form-style-5 input[type="text"],
 .form-style-5 input[type="date"],
 .form-style-5 input[type="datetime"],
@@ -138,6 +140,7 @@
     margin-bottom: 30px;
 
 }
+
 .form-style-5 input[type="text"]:focus,
 .form-style-5 input[type="date"]:focus,
 .form-style-5 input[type="datetime"]:focus,
@@ -255,7 +258,6 @@ body {
 }
 
 h1, h2, a, p {
-  color: white;
   font-weight: 100;
 }
 .tinted h1, .tinted h2, .tinted a, .tinted p {
@@ -308,10 +310,6 @@ p.related a:hover {
     transition: box-shadow .3s ease;
 }
 
-h5 {
-    color: black;
-}
-
 .table > tbody > tr > td, .table > tbody > tr > th, .table > tfoot > tr > td, .table > tfoot > tr > th, .table > thead > tr > td, .table > thead > tr > th {
     color : black;
 }
@@ -319,10 +317,6 @@ h5 {
 .product-name {
     color: black;
     font-weight: bold;
-}
-
-* {
-    color: white;
 }
 
 p {
@@ -342,7 +336,7 @@ p {
 /* Slideshow container */
 .slideshow-container {
   max-width: 100%;
-  height: 500px;
+  height: 600px;
   position: relative;
   margin: auto;
 }
@@ -625,6 +619,11 @@ label {
   background-color: #2D3B55;
 }
 
-.glyphicon {
+.collapse .glyphicon {
     color: white;
 }
+
+.page-scroll {
+    color: white;
+}
+

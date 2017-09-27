@@ -10,12 +10,13 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Our Menu</title>
+    <title>Your order</title>
+
 
     <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}"/>
     <link rel="stylesheet" href="{% static 'css/scrolling-nav.css' %}" />
     <link rel="stylesheet" href="{% static 'css/main.css' %}"/>
-    <link rel="stylesheet" href="{% static 'css/hover-min.css' %}">
+
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
     <script type="text/javascript" src="resources/js/script.js"></script>
@@ -25,12 +26,12 @@
 
 </head>
 
-<body id="page-top" data-spy="scroll" data-target=".navbar-fixed-top">
 
+<body id="page-top" data-spy="scroll" data-target=".navbar-fixed-top">
  {% csrf_token %}
 
     <!-- Navigation -->
-    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
         <div class="container">
             <div class="navbar-header page-scroll">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
@@ -43,15 +44,12 @@
             </div>
 
             <div class="collapse navbar-collapse navbar-ex1-collapse">
-                <ul class="nav navbar-nav">
+                <ul id="nav-buttons" class="nav navbar-nav">
                     <li class="hidden">
                         <a class="page-scroll" href="/"></a>
                     </li>
                     <li>
                         <a class="page-scroll" href="/menu">Menu</a>
-                    </li>
-                    <li>
-                        <a class="page-scroll" href="#contact">Contact Us</a>
                     </li>
                     <li>
                         <a class="page-scroll" href="/basket"> My Basket <span class="glyphicon glyphicon-shopping-cart"/> </a>

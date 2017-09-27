@@ -36,6 +36,7 @@ class Order(models.Model):
     name = models.CharField(max_length=200)
     status = models.CharField(max_length=200)
     email = models.EmailField()
+    date = models.DateTimeField()
 
 class User(models.Model):
     id = models.AutoField(primary_key=True)
@@ -47,3 +48,4 @@ class User(models.Model):
     postcode = models.CharField(max_length=200)
     password = models.CharField(max_length=200)
     email = models.EmailField()
+    type = models.CharField(max_length=200)

@@ -167,11 +167,19 @@
             </div>
             {% else %}
                 <div class="jumbotron">
-                  <h1>My Account</h1>
-                  <p>
-                      <input class="btn btn-primary btn-lg" id="edit_details_btn" onclick="showEditDetails()" type="submit" value="Edit Details"/>
-                      <input class="btn btn-primary btn-lg"  id="show_orders_btn" onclick="showOrders()" type="submit" value="Show Orders"/>
-                  </p>
+                    {% if request.session.account.type == "user" %}
+                      <h1>My Account</h1>
+                      <p>
+                          <input class="btn btn-primary btn-lg" id="edit_details_btn" onclick="showEditDetails()" type="submit" value="Edit Details"/>
+                          <input class="btn btn-primary btn-lg"  id="show_orders_btn" onclick="showOrders()" type="submit" value="Show Orders"/>
+                      </p>
+                    {% elif request.session.account.type == "admin" %}
+                        <h1>Admin</h1>
+                        <p>
+                            <input class="btn btn-primary btn-lg" id="admin_edit_details_btn" onclick="showEditDetails()" type="submit" value="Edit Details"/>
+                            <input class="btn btn-primary btn-lg"  id="admin_show_orders_btn" onclick="adminShowOrders()" type="submit" value="Show Orders"/>
+                        </p>
+                    {% endif %}
                 </div>
 
                 <div class="row" id="showOrders_div" style="display: none;">
@@ -188,6 +196,7 @@
                                         <td>Address</td>
                                         <td>Total</td>
                                         <td>Status</td>
+                                        <td>Ordered on</td>
                                     </tr>
                                     {% for order in orders %}
                                         <tr>
@@ -198,6 +207,7 @@
                                             <td> {{ order.address }} </td>
                                             <td> {{ order.total }} </td>
                                             <td> {{ order.status }} </td>
+                                            <td> {{ order.date }} </td>
                                         </tr>
                                     {% endfor %}
                                 </table>
@@ -308,6 +318,14 @@
 
             } else
                 orderDiv.style.display = "none";
+        }
+
+        function adminShowOrders() {
+            window.location.replace("/admin1/");
+        }
+
+        function show_all_orders_btn() {
+
         }
 
         function checkLoginForm() {

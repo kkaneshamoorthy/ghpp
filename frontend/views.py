@@ -1,3 +1,5 @@
+import datetime
+
 from django.shortcuts import render
 from frontend.models import Product
 from frontend.models import Category
@@ -379,7 +381,8 @@ def order(request):
             address = deliveryData['street']+", "+deliveryData['city']+", "+deliveryData['postcode'],
             name = "Kowrishankar",
             status = "Order Received",
-            email = email
+            email = email,
+            date = datetime.datetime.now()
         )
         order.save()
 
@@ -390,8 +393,9 @@ def order(request):
     return render(request, 'website/ordered.html', context)
 
 def admin(request):
-    order = Order.objects.all()
-    serializer = OrderSerializer(order, many=True)
+    today = datetime.date.today()
+    orders = Order.objects.filter(date__gte=datetime.date(today.year, today.month, today.day))
+    serializer = OrderSerializer(orders, many=True)
 
     context = {
         'orders' : serializer.data
@@ -416,9 +420,15 @@ def account(request):
     context = {'orders' : None}
 
     if 'account' in request.session:
-        email = request.session['account']['email']
-        userOrders = Order.objects.filter(email=email)
-        userSerializer = OrderSerializer(userOrders, many=True)
+        isAdmin = request.session['account']['type'] == "admin"
+
+        if isAdmin == True:
+            userOrders = Order.objects.all()
+            userSerializer = OrderSerializer(userOrders, many=True)
+        else:
+            email = request.session['account']['email']
+            userOrders = Order.objects.filter(email=email)
+            userSerializer = OrderSerializer(userOrders, many=True)
 
         context = {'orders' : userSerializer.data}
 
@@ -439,15 +449,6 @@ def login(request):
         except User.DoesNotExist:
             context = {'status': "failed", 'message': "Username or password is incorrect"}
             return render(request, 'website/account.html/', context)
-
-            # if user is not None:
-            #     if user.password == password:
-            #         request.session['email'] = email
-            #         request.session['user_id'] = user.id
-            #
-            #         context = {'status' : "success", 'message' : "You have successfully logged in", 'email' : email}
-        # except User.DoesNotExist:
-        #     context = {'status': "failed", 'message': "Username or password is incorrect"}
     raise Http404
 
 def logout(request):
@@ -474,7 +475,8 @@ def register(request):
             city = city,
             postcode = postcode,
             password = password,
-            email = email
+            email = email,
+            type = "user"
         )
 
         user.save()
@@ -533,4 +535,16 @@ def checkDeliveryRadius(request):
             if (userPostcode.startswith(postcode)):
                 return HttpResponse("valid")
         return HttpResponse("invalid")
+    raise Http404
+
+def hasNewOrders(request):
+    if (request.method == "POST"):
+        count = request.POST.get('numberOfOrder')
+
+        today = datetime.date.today()
+        orders = Order.objects.filter(date__gte=datetime.date(today.year, today.month, today.day)).count()
+
+        if int(count) == orders:
+            return HttpResponse("false")
+        return HttpResponse("true")
     raise Http404

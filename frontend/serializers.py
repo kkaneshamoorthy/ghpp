@@ -42,6 +42,7 @@ class OrderSerializer(serializers.Serializer):
     paymentType = serializers.CharField()
     status = serializers.CharField()
     email = serializers.CharField()
+    date = serializers.DateTimeField()
 
 class UserSerializer(serializers.Serializer):
     id = serializers.CharField()
@@ -52,3 +53,4 @@ class UserSerializer(serializers.Serializer):
     city = serializers.CharField()
     postcode = serializers.CharField()
     email = serializers.CharField()
+    type = serializers.CharField()
