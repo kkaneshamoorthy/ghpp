@@ -284,13 +284,14 @@ def save_payment(request):
         expiry_year = request.POST.get("expiry_year")
         cvv = request.POST.get("cvv")
         card_holdername = request.POST.get("card_holdername")
+        comment = request.POST.get("comment")
 
         checkout = request.session['checkout']
 
         payment = {'card_type': card_type, 'card_number': card_number, 'expiry_month': expiry_month, 'expiry_year': expiry_year,
          'cvv': cvv, 'card_holdername': card_holdername}
 
-        checkout = {'payment' : payment, 'delivery' : checkout}
+        checkout = {'payment' : payment, 'delivery' : checkout, 'comment' : comment}
 
         request.session['checkout'] = checkout
 
@@ -300,12 +301,13 @@ def save_payment(request):
 def view_checkout(request):
     return HttpResponse(json.dumps(request.session['checkout']))
 
-def payment(request):
+def payment(request): #card payment
     context = {}
     if (request.method == 'POST'):
         checkout = request.session['checkout']
         paymentData = checkout['payment']
         deliveryData = checkout['delivery']
+        comment = checkout['comment']
         total = deliveryData['total']
 
         payment = Payment({
@@ -349,7 +351,8 @@ def payment(request):
                 deliveryType = "Collection",
                 address = deliveryData['street']+", "+deliveryData['city']+", "+deliveryData['postcode'],
                 name = "Kowrishankar",
-                status = "Order Received"
+                status = "Order Received",
+                comment = comment
             )
             order.save()
 
@@ -364,13 +367,14 @@ def payment(request):
     return render(request, 'website/ordered.html', context)
 
 
-def order(request):
+def order(request): #cash payment
     context = {}
     if (request.method == 'POST'):
         checkout = request.session['checkout']
         email = request.session['account']['email']
         paymentData = checkout['payment']
         deliveryData = checkout['delivery']
+        comment = checkout['comment']
         total = deliveryData['total']
 
         order = Order(
@@ -382,7 +386,8 @@ def order(request):
             name = "Kowrishankar",
             status = "Order Received",
             email = email,
-            date = datetime.datetime.now()
+            date = datetime.datetime.now(),
+            comment = comment
         )
         order.save()
 
@@ -398,7 +403,7 @@ def admin(request):
     serializer = OrderSerializer(orders, many=True)
 
     context = {
-        'orders' : serializer.data
+        'orders' : serializer.data,
     }
 
     return render(request, 'website/admin.html', context)
@@ -424,17 +429,15 @@ def account(request):
 
         if isAdmin == True:
             userOrders = Order.objects.all()
-            userSerializer = OrderSerializer(userOrders, many=True)
+            orderSerializer = OrderSerializer(userOrders, many=True)
         else:
             email = request.session['account']['email']
             userOrders = Order.objects.filter(email=email)
-            userSerializer = OrderSerializer(userOrders, many=True)
+            orderSerializer = OrderSerializer(userOrders, many=True)
 
-        context = {'orders' : userSerializer.data}
+        context = {'orders' : orderSerializer.data}
 
     return render(request, 'website/account.html', context)
-    #
-    # return HttpResponse((userSerializer.data))
 
 def login(request):
     if (request.method == 'POST'):
@@ -519,6 +522,9 @@ def editPersonalDetails(request):
         user.last_name = last_name
 
         user.save()
+
+        userSerializer = UserSerializer(user, many=False)
+        request.session['account'] = userSerializer.data
 
         return HttpResponseRedirect("/account/")
     raise Http404

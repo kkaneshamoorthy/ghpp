@@ -143,6 +143,11 @@
 
                             <div class="panel-body">
                                 <div class="row">
+                                    <div class="col col-lg-12">
+                                        <textarea name="comment" placeholder="Any info" class="placeholder-override-input" id="comment" required autocomplete="off"></textarea>
+                                    </div>
+                                </div>
+                                <div class="row">
                                     <div class="col col-lg-6">
                                         <input onclick="stepnext(1);" type="button" value="Back"/>
                                     </div>
@@ -341,6 +346,7 @@
             var expiry_year = $("#expiry_year").val();
             var cvv = $("#cvv").val();
             var card_holdername = $("#cardholdername").val();
+            var comment = $("#comment").val();
 
              {% if payment_type == "card" %}
                 var element = document.getElementById("payment");
@@ -349,7 +355,7 @@
             $.ajax({
                 url: "/checkout/3/",
                 type: "POST",
-                data: {'card_type': card_type, 'card_number': card_number, 'expiry_month': expiry_month, 'expiry_year': expiry_year, 'cvv': cvv, 'card_holdername' : card_holdername, 'csrfmiddlewaretoken' : csrf},
+                data: {'comment' : comment, 'card_type': card_type, 'card_number': card_number, 'expiry_month': expiry_month, 'expiry_year': expiry_year, 'cvv': cvv, 'card_holdername' : card_holdername, 'csrfmiddlewaretoken' : csrf},
                 success: function (result) {
                     console.log("payment details saved");
                 },

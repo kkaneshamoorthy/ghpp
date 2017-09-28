@@ -84,6 +84,17 @@
         <div id="home" class="container" style="color: black;">
             <div class="row">
                 <div id="menu_list" class="col-lg-12">
+                    <div class="jumbotron">
+                        <p>
+                            <input class="btn btn-primary btn-lg" id="admin_edit_details_btn" onclick="showEditDetails()" type="submit" value="Show open orders"/>
+                            <input class="btn btn-primary btn-lg"  id="admin_show_orders_btn" onclick="adminShowOrders()" type="submit" value="Show past orders"/>
+                            <input class="btn btn-primary btn-lg"  id="admin_show_orders_btn" onclick="adminShowOrders()" type="submit" value="Show today's order"/>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div id="menu_list" class="col-lg-12">
                     <table class='table'>
                         <tr>
                             <td>Order Id</td>
@@ -94,6 +105,7 @@
                             <td>Address</td>
                             <td>Total</td>
                             <td>Status</td>
+                            <td>Comment</td>
                             <td>Date/Time</td>
                         </tr>
                         {% for order in orders %}
@@ -106,7 +118,8 @@
                                 <td> {{ order.address }} </td>
                                 <td> {{ order.total }} </td>
                                 <td> {{ order.status }} </td>
-                                <td> {{ order.date }} </td>
+                                <td> {{ order.comment }} </td>
+                                <td class="datetime"> {{ order.date }} </td>
                                 <td> <a class="editOrder"  id="{{ order.id }}"> <span class="glyphicon glyphicon-pencil"/> </a></td>
                             </tr>
                         {% endfor %}
@@ -134,6 +147,12 @@
     <script>
         var csrf = $('[name="csrfmiddlewaretoken"]').val();
 
+        $('.datetime').each(function (i, dateTime) {
+            var date = $(dateTime).html().split('T')[0];
+            var time = $(dateTime).html().split('T')[1].substring(0, 8);
+            $(dateTime).html(date+" "+time);
+        });
+
         window.setInterval(function () {
             $.ajax({
                 url: "/hasNewOrder/",
@@ -145,7 +164,10 @@
                         x.play();
                         x.play();
                         x.play();
-                        location.reload();
+
+                        window.setInterval(function(){
+                            location.reload();
+                        }, 4000);
                     }
                 }
             });

@@ -37,6 +37,7 @@ class Order(models.Model):
     status = models.CharField(max_length=200)
     email = models.EmailField()
     date = models.DateTimeField()
+    comment = models.CharField(max_length=300)
 
 class User(models.Model):
     id = models.AutoField(primary_key=True)

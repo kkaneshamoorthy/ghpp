@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="BookmarkManager">
-    <bookmark url="file://$PROJECT_DIR$/frontend/templates/website/checkout-delivery.html" line="248" />
+    <bookmark url="file://$PROJECT_DIR$/frontend/templates/website/checkout-delivery.html" line="253" />
   </component>
   <component name="ChangeListManager">
     <list default="true" id="59369e8f-4540-4904-b6fe-c60a15e05ab0" name="Default" comment="">
@@ -9,16 +9,10 @@
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/frontend/models.py" afterPath="$PROJECT_DIR$/frontend/models.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/frontend/serializers.py" afterPath="$PROJECT_DIR$/frontend/serializers.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/frontend/static/css/main.css" afterPath="$PROJECT_DIR$/frontend/static/css/main.css" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/frontend/static/css/scrolling-nav.css" afterPath="$PROJECT_DIR$/frontend/static/css/scrolling-nav.css" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/frontend/templates/website/account.html" afterPath="$PROJECT_DIR$/frontend/templates/website/account.html" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/frontend/templates/website/admin.html" afterPath="$PROJECT_DIR$/frontend/templates/website/admin.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/frontend/templates/website/basket.html" afterPath="$PROJECT_DIR$/frontend/templates/website/basket.html" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/frontend/templates/website/checkout-delivery.html" afterPath="$PROJECT_DIR$/frontend/templates/website/checkout-delivery.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/frontend/templates/website/index.html" afterPath="$PROJECT_DIR$/frontend/templates/website/index.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/frontend/templates/website/ordered.html" afterPath="$PROJECT_DIR$/frontend/templates/website/ordered.html" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/frontend/views.py" afterPath="$PROJECT_DIR$/frontend/views.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/website/urls.py" afterPath="$PROJECT_DIR$/website/urls.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -50,21 +44,9 @@
       <file leaf-file-name="admin.html" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/frontend/templates/website/admin.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="324">
-              <caret line="135" column="0" lean-forward="true" selection-start-line="135" selection-start-column="0" selection-end-line="135" selection-end-column="0" />
+            <state relative-caret-position="378">
+              <caret line="90" column="161" lean-forward="false" selection-start-line="90" selection-start-column="161" selection-end-line="90" selection-end-column="161" />
               <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="views.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/frontend/views.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="543">
-              <caret line="543" column="31" lean-forward="false" selection-start-line="543" selection-start-column="31" selection-end-line="543" selection-end-column="31" />
-              <folding>
-                <element signature="e#0#15#0" expanded="true" />
-              </folding>
             </state>
           </provider>
         </entry>
@@ -83,11 +65,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>save_payment</find>
-      <find>checkout/3</find>
-      <find>subname</find>
-      <find>delivery_charge</find>
-      <find>extras_id</find>
       <find>request.POST</find>
       <find>objects.</find>
       <find>try</find>
@@ -113,6 +90,11 @@
       <find>count</find>
       <find>gte</find>
       <find>static</find>
+      <find>comment</find>
+      <find>editPersonalDetails</find>
+      <find>save</find>
+      <find>accljn</find>
+      <find>admin</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -135,18 +117,18 @@
         <option value="$PROJECT_DIR$/frontend/templates/website/loginMessage.html" />
         <option value="$PROJECT_DIR$/frontend/templates/website/menu.html" />
         <option value="$PROJECT_DIR$/frontend/admin.py" />
-        <option value="$PROJECT_DIR$/frontend/templates/website/checkout-delivery.html" />
         <option value="$PROJECT_DIR$/frontend/static/css/hover-min.css" />
         <option value="$PROJECT_DIR$/frontend/static/css/scrolling-nav.css" />
         <option value="$PROJECT_DIR$/frontend/templates/website/ordered.html" />
-        <option value="$PROJECT_DIR$/frontend/models.py" />
-        <option value="$PROJECT_DIR$/frontend/serializers.py" />
-        <option value="$PROJECT_DIR$/frontend/templates/website/account.html" />
         <option value="$PROJECT_DIR$/frontend/templates/website/basket.html" />
         <option value="$PROJECT_DIR$/frontend/static/css/main.css" />
         <option value="$PROJECT_DIR$/frontend/templates/website/index.html" />
         <option value="$PROJECT_DIR$/website/urls.py" />
+        <option value="$PROJECT_DIR$/frontend/templates/website/checkout-delivery.html" />
+        <option value="$PROJECT_DIR$/frontend/models.py" />
+        <option value="$PROJECT_DIR$/frontend/serializers.py" />
         <option value="$PROJECT_DIR$/frontend/views.py" />
+        <option value="$PROJECT_DIR$/frontend/templates/website/account.html" />
         <option value="$PROJECT_DIR$/frontend/templates/website/admin.html" />
       </list>
     </option>
@@ -183,6 +165,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -287,7 +270,6 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scope" />
       <pane id="Scratches" />
     </panes>
   </component>
@@ -297,7 +279,7 @@
     <property name="js.eslint.eslintPackage" value="" />
     <property name="DefaultHtmlFileTemplate" value="HTML File" />
     <property name="list.type.of.created.stylesheet" value="CSS" />
-    <property name="SearchEverywhereHistoryKey" value="url&#9;FILE&#9;file:///home/kowrishankar/PycharmProjects/website/website/urls.py&#10;MODEL&#9;FILE&#9;file:///home/kowrishankar/PycharmProjects/website/frontend/models.py&#10;odel&#9;FILE&#9;file:///home/kowrishankar/PycharmProjects/website/frontend/models.py&#10;urls&#9;FILE&#9;file:///home/kowrishankar/PycharmProjects/website/website/urls.py&#10;view&#9;FILE&#9;file:///home/kowrishankar/PycharmProjects/website/frontend/views.py&#10;ur&#9;FILE&#9;file:///home/kowrishankar/PycharmProjects/website/website/urls.py&#10;account&#9;FILE&#9;file:///home/kowrishankar/PycharmProjects/website/frontend/templates/website/account.html&#10;baske&#9;FILE&#9;file:///home/kowrishankar/PycharmProjects/website/frontend/templates/website/basket.html&#10;setti&#9;FILE&#9;file:///home/kowrishankar/PycharmProjects/website/website/settings.py&#10;ADMIN&#9;FILE&#9;file:///home/kowrishankar/PycharmProjects/website/frontend/templates/website/admin.html&#10;model&#9;FILE&#9;file:///home/kowrishankar/PycharmProjects/website/frontend/models.py" />
+    <property name="SearchEverywhereHistoryKey" value="urls&#9;FILE&#9;file:///home/kowrishankar/PycharmProjects/website/website/urls.py&#10;url&#9;FILE&#9;file:///home/kowrishankar/PycharmProjects/website/website/urls.py&#10;view&#9;FILE&#9;file:///home/kowrishankar/PycharmProjects/website/frontend/views.py&#10;MODEL&#9;FILE&#9;file:///home/kowrishankar/PycharmProjects/website/frontend/models.py&#10;odel&#9;FILE&#9;file:///home/kowrishankar/PycharmProjects/website/frontend/models.py&#10;ur&#9;FILE&#9;file:///home/kowrishankar/PycharmProjects/website/website/urls.py&#10;account&#9;FILE&#9;file:///home/kowrishankar/PycharmProjects/website/frontend/templates/website/account.html&#10;baske&#9;FILE&#9;file:///home/kowrishankar/PycharmProjects/website/frontend/templates/website/basket.html&#10;setti&#9;FILE&#9;file:///home/kowrishankar/PycharmProjects/website/website/settings.py&#10;ADMIN&#9;FILE&#9;file:///home/kowrishankar/PycharmProjects/website/frontend/templates/website/admin.html&#10;model&#9;FILE&#9;file:///home/kowrishankar/PycharmProjects/website/frontend/models.py" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
@@ -606,24 +588,24 @@
     <frame x="-1" y="0" width="1922" height="1053" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.25987193" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.26254" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32939914" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32939914" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32832617" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32939914" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32939914" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.19742489" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
     </layout>
     <layout-to-restore>
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32939914" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -707,7 +689,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
+          <folding>
+            <element signature="e#0#15#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -766,7 +750,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="120">
           <caret line="8" column="35" lean-forward="false" selection-start-line="8" selection-start-column="35" selection-end-line="8" selection-end-column="35" />
-          <folding />
+          <folding>
+            <element signature="e#0#15#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -912,14 +898,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/frontend/templates/website/checkout-delivery.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="264">
-          <caret line="362" column="8" lean-forward="false" selection-start-line="362" selection-start-column="8" selection-end-line="362" selection-end-column="8" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/frontend/static/css/hover-min.css">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="96">
@@ -933,13 +911,6 @@
         <state relative-caret-position="-204">
           <caret line="32" column="0" lean-forward="true" selection-start-line="32" selection-start-column="0" selection-end-line="32" selection-end-column="0" />
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/frontend/serializers.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="449">
-          <caret line="44" column="38" lean-forward="false" selection-start-line="44" selection-start-column="38" selection-end-line="44" selection-end-column="38" />
         </state>
       </provider>
     </entry>
@@ -964,14 +935,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/frontend/templates/website/basket.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="80">
-          <caret line="229" column="14" lean-forward="false" selection-start-line="229" selection-start-column="14" selection-end-line="229" selection-end-column="14" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/frontend/templates/website/ordered.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="782">
@@ -980,44 +943,68 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/frontend/templates/website/account.html">
+    <entry file="file://$PROJECT_DIR$/frontend/templates/website/basket.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="320">
-          <caret line="171" column="13" lean-forward="true" selection-start-line="171" selection-start-column="13" selection-end-line="171" selection-end-column="13" />
+        <state relative-caret-position="512">
+          <caret line="341" column="13" lean-forward="true" selection-start-line="341" selection-start-column="13" selection-end-line="341" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/frontend/serializers.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="449">
+          <caret line="44" column="38" lean-forward="true" selection-start-line="44" selection-start-column="38" selection-end-line="44" selection-end-column="38" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/frontend/models.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="503">
-          <caret line="39" column="0" lean-forward="true" selection-start-line="39" selection-start-column="0" selection-end-line="39" selection-end-column="0" />
+        <state relative-caret-position="431">
+          <caret line="35" column="43" lean-forward="true" selection-start-line="35" selection-start-column="43" selection-end-line="35" selection-end-column="43" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/frontend/templates/website/checkout-delivery.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="590">
+          <caret line="238" column="36" lean-forward="false" selection-start-line="238" selection-start-column="36" selection-end-line="238" selection-end-column="36" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/website/urls.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="575">
-          <caret line="46" column="53" lean-forward="true" selection-start-line="46" selection-start-column="53" selection-end-line="46" selection-end-column="53" />
+        <state relative-caret-position="509">
+          <caret line="45" column="49" lean-forward="true" selection-start-line="45" selection-start-column="49" selection-end-line="45" selection-end-column="49" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/frontend/views.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="543">
-          <caret line="543" column="31" lean-forward="false" selection-start-line="543" selection-start-column="31" selection-end-line="543" selection-end-column="31" />
+        <state relative-caret-position="313">
+          <caret line="405" column="35" lean-forward="false" selection-start-line="405" selection-start-column="35" selection-end-line="405" selection-end-column="35" />
           <folding>
             <element signature="e#0#15#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/frontend/templates/website/account.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="364">
+          <caret line="178" column="21" lean-forward="false" selection-start-line="178" selection-start-column="21" selection-end-line="178" selection-end-column="21" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/frontend/templates/website/admin.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="324">
-          <caret line="135" column="0" lean-forward="true" selection-start-line="135" selection-start-column="0" selection-end-line="135" selection-end-column="0" />
+        <state relative-caret-position="378">
+          <caret line="90" column="161" lean-forward="false" selection-start-line="90" selection-start-column="161" selection-end-line="90" selection-end-column="161" />
           <folding />
         </state>
       </provider>

@@ -43,6 +43,7 @@ class OrderSerializer(serializers.Serializer):
     status = serializers.CharField()
     email = serializers.CharField()
     date = serializers.DateTimeField()
+    comment = serializers.CharField()
 
 class UserSerializer(serializers.Serializer):
     id = serializers.CharField()

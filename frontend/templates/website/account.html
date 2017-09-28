@@ -196,6 +196,7 @@
                                         <td>Address</td>
                                         <td>Total</td>
                                         <td>Status</td>
+                                        <td>Comment</td>
                                         <td>Ordered on</td>
                                     </tr>
                                     {% for order in orders %}
@@ -207,7 +208,8 @@
                                             <td> {{ order.address }} </td>
                                             <td> {{ order.total }} </td>
                                             <td> {{ order.status }} </td>
-                                            <td> {{ order.date }} </td>
+                                            <td> {{ order.comment }} </td>
+                                            <td class="datetime"> {{ order.date }} </td>
                                         </tr>
                                     {% endfor %}
                                 </table>
@@ -297,6 +299,12 @@
     <script src="{% static 'js/bootbox.min.js' %}"></script>
 
     <script>
+
+        $('.datetime').each(function (i, dateTime) {
+            var date = $(dateTime).html().split('T')[0];
+            var time = $(dateTime).html().split('T')[1].substring(0, 8);
+            $(dateTime).html(date+" "+time);
+        });
 
         function showEditDetails() {
             var personalDiv = document.getElementById("editPersonalDetails_div");
