@@ -82,13 +82,31 @@
     </audio>
 
         <div id="home" class="container" style="color: black;">
+            <div id="currentlyDisplayedPage" style="display: none"> {{ page }} </div>
             <div class="row">
                 <div id="menu_list" class="col-lg-12">
                     <div class="jumbotron">
                         <p>
-                            <input class="btn btn-primary btn-lg" id="admin_edit_details_btn" onclick="showEditDetails()" type="submit" value="Show open orders"/>
-                            <input class="btn btn-primary btn-lg"  id="admin_show_orders_btn" onclick="adminShowOrders()" type="submit" value="Show past orders"/>
-                            <input class="btn btn-primary btn-lg"  id="admin_show_orders_btn" onclick="adminShowOrders()" type="submit" value="Show today's order"/>
+                            <form class="navbar-form navbar-left" method="POST" action="/admin1/">
+                                {% csrf_token %}
+                              <div class="form-group">
+                                  <input class="btn btn-primary btn-lg" name="open-orders-bt" type="submit" value="Show open orders"/>
+                              </div>
+                            </form>
+
+                            <form class="navbar-form navbar-left" method="POST" action="/admin1/">
+                                {% csrf_token %}
+                              <div class="form-group">
+                                  <input class="btn btn-primary btn-lg"  name="past-orders-bt" type="submit" value="Show all orders"/>
+                              </div>
+                            </form>
+
+                            <form class="navbar-form navbar-left" method="POST" action="/admin1/">
+                                {% csrf_token %}
+                              <div class="form-group">
+                                  <input class="btn btn-primary btn-lg"  name="today-orders-bt" type="submit" value="Show today's order"/>
+                              </div>
+                            </form>
                         </p>
                     </div>
                 </div>
@@ -154,10 +172,12 @@
         });
 
         window.setInterval(function () {
+            var currentlyDisplayedPage = "{{ page }}";
+
             $.ajax({
                 url: "/hasNewOrder/",
                 type: "POST",
-                data: {'numberOfOrder': {{ orders | length }}, 'csrfmiddlewaretoken' : csrf},
+                data: {'numberOfOrder': {{ orders | length }}, 'csrfmiddlewaretoken' : csrf, 'currentlyDisplayedPage' : currentlyDisplayedPage},
                 success: function (result) {
                     if (result === "true") {
                         var x = document.getElementById("myAudio");
@@ -195,6 +215,10 @@
                     {
                         text: 'Collected or Delivered',
                         value: 'Collected/Delivered',
+                    },
+                    {
+                        text: 'Cancel Order',
+                        value: 'Cancel Order',
                     }
                 ],
                 callback: function (result) {
@@ -207,7 +231,6 @@
                         async: false,
                         success: function (result) {
                             console.log("order status saved");
-                            location.reload();
                         },
                         error: function (xmlHttpRequest, textStatus, errorThrown) {
                              alert(errorThrown);

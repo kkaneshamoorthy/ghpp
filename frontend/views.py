@@ -377,6 +377,12 @@ def order(request): #cash payment
         comment = checkout['comment']
         total = deliveryData['total']
 
+        hour = datetime.datetime.now().hour
+        minute = datetime.datetime.now().minute
+
+        # if (hour >= 23 & minute >= 1):
+        #     return render(request, 'website/ordered.html', {'status' : 'failed', 'orderStatus' : 'Order failed', 'message' : 'Shop is now closed. Order must be made before 11PM.'})
+
         order = Order(
             product= deliveryData['total']['product'],
             total = float(total['total']),
@@ -398,16 +404,41 @@ def order(request): #cash payment
     return render(request, 'website/ordered.html', context)
 
 def admin(request):
-    today = datetime.date.today()
-    orders = Order.objects.filter(date__gte=datetime.date(today.year, today.month, today.day))
-    serializer = OrderSerializer(orders, many=True)
+    if (request.method == "POST"):
+        serializer = None
+        toggle = None
+        if ('open-orders-bt' in request.POST):
+            orders = Order.objects.filter(status = "Order Received")
+            serializer = OrderSerializer(orders, many=True)
+            toggle = "openOrders"
+        elif ('past-orders-bt' in request.POST):
+            orders = Order.objects.all()
+            serializer = OrderSerializer(orders, many=True)
+            toggle = "pastOrders"
+        elif ('today-orders-bt' in request.POST):
+            today = datetime.date.today()
+            orders = Order.objects.filter(date__gte=datetime.date(today.year, today.month, today.day))
+            serializer = OrderSerializer(orders, many=True)
+            toggle = "todayOrders"
 
-    context = {
-        'orders' : serializer.data,
-    }
+        context = {
+            'orders' : serializer.data,
+            'page' : toggle
+        }
 
-    return render(request, 'website/admin.html', context)
-    # return HttpResponse(json.dumps(serializer.data), content_type="application/json")
+        return render(request, 'website/admin.html', context)
+        # return HttpResponse(json.dumps(serializer.data), content_type="application/json")
+    else:
+        today = datetime.date.today()
+        orders = Order.objects.filter(date__gte=datetime.date(today.year, today.month, today.day))
+        serializer = OrderSerializer(orders, many=True)
+
+        context = {
+            'orders': serializer.data,
+        }
+
+        return render(request, 'website/admin.html', context)
+        # return HttpResponse(json.dumps(serializer.data), content_type="application/json")
 
 def changeOrderStatus(request):
     if (request.method == "POST"):
@@ -546,6 +577,10 @@ def checkDeliveryRadius(request):
 def hasNewOrders(request):
     if (request.method == "POST"):
         count = request.POST.get('numberOfOrder')
+        currentlyDisplayedPage = request.POST.get('currentlyDisplayedPage')
+
+        if (currentlyDisplayedPage == "pastOrders"):
+            return HttpResponse("false")
 
         today = datetime.date.today()
         orders = Order.objects.filter(date__gte=datetime.date(today.year, today.month, today.day)).count()
