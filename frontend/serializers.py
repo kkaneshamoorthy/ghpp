@@ -55,3 +55,14 @@ class UserSerializer(serializers.Serializer):
     postcode = serializers.CharField()
     email = serializers.CharField()
     type = serializers.CharField()
+
+class OptionsSerializer(serializers.Serializer):
+    name = serializers.CharField()
+    category = serializers.RelatedField(source='OptionCategory', read_only=True)
+
+class OptionCategorySerializer(serializers.Serializer):
+    name = serializers.CharField()
+
+class ProductCategorySerializer(serializers.Serializer):
+    product = serializers.RelatedField(source='Product', read_only=True)
+    category = serializers.RelatedField(source='OptionCategory', read_only=True)

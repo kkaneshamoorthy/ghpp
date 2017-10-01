@@ -7,6 +7,9 @@ from frontend.models import ProductExtras
 from frontend.models import Extras
 from frontend.models import UtilityData
 from frontend.models import User
+from frontend.models import OptionCategory
+from frontend.models import Options
+from frontend.models import ProductOption
 from frontend.models import Order
 from django.http import HttpResponseRedirect, HttpResponse, Http404, HttpResponseBadRequest
 from .serializers import ProductSerializer, UserSerializer
@@ -14,6 +17,11 @@ from .serializers import CategorySerializer
 from .serializers import ProductExtrasSerializer
 from .serializers import OrderSerializer
 from .serializers import UtilitySerializer
+from .serializers import ExtraSerializer
+from .serializers import OptionCategorySerializer
+from .serializers import OptionsSerializer
+from .serializers import ProductCategorySerializer
+from .serializers import ExtraSerializer
 from .serializers import ExtraSerializer
 from frontend.models import Order
 import json
@@ -589,3 +597,13 @@ def hasNewOrders(request):
             return HttpResponse("false")
         return HttpResponse("true")
     raise Http404
+
+def getNumberOfOptions(request):
+    if (request.method == "POST"):
+        productId = request.POST.get('productId')
+
+        numberOfOptions = ProductOption.objects.filter(product=productId).count()
+
+        return HttpResponse(numberOfOptions)
+    raise Http404
+

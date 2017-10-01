@@ -50,3 +50,16 @@ class User(models.Model):
     password = models.CharField(max_length=200)
     email = models.EmailField()
     type = models.CharField(max_length=200)
+
+class OptionCategory(models.Model):
+    id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=200)
+
+class Options(models.Model):
+    id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=200)
+    category = models.ForeignKey(OptionCategory)
+
+class ProductOption(models.Model):
+    product = models.ForeignKey(Product)
+    optionCategory = models.ForeignKey(OptionCategory)

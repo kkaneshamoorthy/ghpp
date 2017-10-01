@@ -46,4 +46,5 @@ urlpatterns = [
     url(r'^editPersonalDetails/$', views.editPersonalDetails),
     url(r'^check-delivery-radius/$', views.checkDeliveryRadius),
     url(r'^hasNewOrder/$', views.hasNewOrders),
+    url(r'^getNumberOfOptions/$', views.getNumberOfOptions),
 ]
