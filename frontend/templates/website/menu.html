@@ -130,53 +130,6 @@
             </div>
          </div>
 
-        <div id="myModal" class="modal">
-            <div class="modal-content">
-                <span class="close">&times;</span>
-
-                <div class="row">
-                    <div class="stepwizard">
-                        <div class="stepwizard-row">
-                            <div class="stepwizard-step">
-                                <a class="btn btn-default btn-circle active-step" href="#step-1" data-toggle="tab" onclick="stepnext(1)" >1</a>
-                                <p>Your Details</p>
-                            </div>
-                            <div class="stepwizard-step">
-                                <a class="btn btn-default btn-circle" disabled="disabled" href="#step-2" data-toggle="tab">2</a>
-                                <p>Payment Details</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="rate-updates">
-                    <div class="tab-content margintop0" style="border:none !important;">
-                        <div class="tab-pane fade active in padding20" id="step-1" >
-                            <form method="POST" action="/checkout/2/">
-                                {% csrf_token %}
-                                <input id="delivery_details_btn" onclick="stepnext(2);" type="button" value="Next"/>
-                            </form>
-                        </div>
-
-                        <div class="tab-pane fade padding20 " id="step-2">
-                            <form method="POST" action="/checkout/2/">
-                                <div class="panel-body">
-                                    <div class="row">
-                                        <div class="col col-lg-6">
-                                            <input onclick="stepnext(1);" type="button" value="Back"/>
-                                        </div>
-                                        <div class="col col-lg-6">
-                                            <input id="payment_details_btn" value="Next" onclick="stepnext(3);" type="button" />
-                                        </div>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
       <!-- jQuery -->
     {#    <script src="{% static '/js/jquery.js' %} "></script>#}
         <script src="{% static 'js/jquery-3.1.1.min.js' %} "></script>
@@ -203,35 +156,62 @@
                 return target.split(search).join(replacement);
             };
 
+            function wait(ms){
+               var start = new Date().getTime();
+               var end = start;
+               while(end < start + ms) {
+                 end = new Date().getTime();
+              }
+            }
+
             var addToBasket = function(){
                 var extraToAdd = [];
                 $(".btn-add-basket").click(function () {
                     var productToAdd = this.id;
 
-                    var modal = document.getElementById('myModal');
-                    var span = document.getElementsByClassName("close")[0];
-
-                    modal.style.display = "block"; // displays the modal
-
-                    // closing through cross
-                    span.onclick = function() {
-                        modal.style.display = "none";
-                    };
-
-                    //if user press outside of the modal then close
-                    window.onclick = function(event) {
-                        if (event.target == modal) {
-                            modal.style.display = "none";
-                        }
-                    };
-
                     var productData = productToAdd.split(":");
                     var productId = productData[0];
                     var productSubname = productData[1];
                     var productPrice = productData[2];
+                    var productOptionsCategory = [];
 
-                    var numberOfOptions = getNumberOfOptionsCategoryToDisplay(productId, csrf); //loop through options and display
-                    //Then execute the following code
+                    var data = new FormData();
+                    data.append('productId', productId);
+                    data.append('csrfmiddlewaretoken', csrf);
+
+                    var optionRequest = new XMLHttpRequest();
+                    optionRequest.onreadystatechange = function() {
+                        if (this.readyState == 4) {
+                            var productOptionJson = JSON.parse(optionRequest.response);
+
+                            for (var t=0; t<productOptionJson.length; t++) {
+                                var option = productOptionJson[t];
+                                var optionCategoryName = option.optionCategory.name;
+                                productOptionsCategory.push(optionCategoryName);
+
+                                console.log(optionCategoryName);
+                            }
+
+                            for (t = 0; t<productOptionsCategory.length; t++) {
+                                var dataToSend = new FormData();
+                                dataToSend.append('optionCategoryName', optionCategoryName);
+                                dataToSend.append('csrfmiddlewaretoken', csrf);
+
+                                var getOptionCategoryReq = new XMLHttpRequest();
+                                getOptionCategoryReq.onreadystatechange = function() {
+                                    if (this.readyState == 4) {
+                                        console.log(getOptionCategoryReq.response);
+                                        wait(1000);
+                                    }
+                                };
+                                getOptionCategoryReq.open("POST", "/getOptions/", true);
+                                getOptionCategoryReq.send(dataToSend);
+
+                            }
+                        }
+                    };
+                    optionRequest.open("POST", "/getCategoryOptions/", true);
+                    optionRequest.send(data);
 
                     dataOut = [];
                     var requiredSelection = 0;

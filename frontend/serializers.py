@@ -3,9 +3,11 @@ from .models import Product
 from .models import Category
 from .models import Extras
 from .models import ProductExtras
+from .models import ProductOption
 from .models import UtilityData
 from .models import Order
 from .models import User
+from .models import OptionCategory
 
 class CategorySerializer(serializers.Serializer):
     name = serializers.CharField(read_only=True)
@@ -56,13 +58,13 @@ class UserSerializer(serializers.Serializer):
     email = serializers.CharField()
     type = serializers.CharField()
 
-class OptionsSerializer(serializers.Serializer):
-    name = serializers.CharField()
-    category = serializers.RelatedField(source='OptionCategory', read_only=True)
-
 class OptionCategorySerializer(serializers.Serializer):
     name = serializers.CharField()
 
-class ProductCategorySerializer(serializers.Serializer):
-    product = serializers.RelatedField(source='Product', read_only=True)
-    category = serializers.RelatedField(source='OptionCategory', read_only=True)
+class OptionsSerializer(serializers.Serializer):
+    name = serializers.CharField()
+    category = OptionCategorySerializer()
+
+class ProductOptionSerializer(serializers.Serializer):
+    product = ProductSerializer()
+    optionCategory = OptionCategorySerializer()

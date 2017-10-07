@@ -20,12 +20,15 @@ from .serializers import UtilitySerializer
 from .serializers import ExtraSerializer
 from .serializers import OptionCategorySerializer
 from .serializers import OptionsSerializer
-from .serializers import ProductCategorySerializer
+from .serializers import ProductOptionSerializer
 from .serializers import ExtraSerializer
 from .serializers import ExtraSerializer
 from frontend.models import Order
 import json
 from paypalrestsdk import Payment
+from rest_framework.renderers import JSONRenderer
+from django.utils.six import BytesIO
+from rest_framework.parsers import JSONParser
 
 # Create your views here.
 def index(request):
@@ -607,3 +610,24 @@ def getNumberOfOptions(request):
         return HttpResponse(numberOfOptions)
     raise Http404
 
+def getCategoryOptions(request):
+    if (request.method == 'POST'):
+        productId = request.POST.get('productId')
+
+        productObj = Product.objects.filter(id=productId)
+        po = ProductOption.objects.filter(product=productObj)
+        poSerializer = ProductOptionSerializer(po, many=True)
+
+        return HttpResponse(json.dumps(poSerializer.data))
+    raise Http404
+
+def getOptions(request):
+    if (request.method == 'POST'):
+        optionCategoryName = request.POST.get('optionCategoryName')
+
+        categoryObj = OptionCategory.objects.filter(name=optionCategoryName)
+        optionObj = Options.objects.filter(category=categoryObj)
+        optionSerializer = OptionsSerializer(optionObj, many=True)
+
+        return HttpResponse(json.dumps(optionSerializer.data))
+    raise Http404
