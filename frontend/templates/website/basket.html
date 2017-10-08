@@ -205,6 +205,7 @@
                                         {% for extra in product.extras %}
                                             <span> --- {{ extra.name }}</span> <br/>
                                         {% endfor %}
+                                        Options: {{ product.selectedOption }}
                                     </td>
                                     <td>Quantity: {{ product.quantity }}</td>
                                     <td><span class="product-price">£{{ product.price }}</span></td>

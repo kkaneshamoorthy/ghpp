@@ -197,6 +197,7 @@
                                         <td>Total</td>
                                         <td>Status</td>
                                         <td>Comment</td>
+                                        <td>Option</td>
                                         <td>Ordered on</td>
                                     </tr>
                                     {% for order in orders %}
@@ -209,6 +210,7 @@
                                             <td> {{ order.total }} </td>
                                             <td> {{ order.status }} </td>
                                             <td> {{ order.comment }} </td>
+                                            <td> {{ order.option }} </td>
                                             <td class="datetime"> {{ order.date }} </td>
                                         </tr>
                                     {% endfor %}

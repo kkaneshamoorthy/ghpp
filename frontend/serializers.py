@@ -46,6 +46,7 @@ class OrderSerializer(serializers.Serializer):
     email = serializers.CharField()
     date = serializers.DateTimeField()
     comment = serializers.CharField()
+    option = serializers.CharField()
 
 class UserSerializer(serializers.Serializer):
     id = serializers.CharField()

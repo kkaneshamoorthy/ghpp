@@ -156,7 +156,7 @@
                 return target.split(search).join(replacement);
             };
 
-            function wait(ms){
+             function wait(ms){
                var start = new Date().getTime();
                var end = start;
                while(end < start + ms) {
@@ -174,6 +174,8 @@
                     var productSubname = productData[1];
                     var productPrice = productData[2];
                     var productOptionsCategory = [];
+                    var optionCategoryMap = {};
+                    var selectedOptionsToAdd = "";
 
                     var data = new FormData();
                     data.append('productId', productId);
@@ -188,26 +190,66 @@
                                 var option = productOptionJson[t];
                                 var optionCategoryName = option.optionCategory.name;
                                 productOptionsCategory.push(optionCategoryName);
-
-                                console.log(optionCategoryName);
                             }
 
-                            for (t = 0; t<productOptionsCategory.length; t++) {
-                                var dataToSend = new FormData();
-                                dataToSend.append('optionCategoryName', optionCategoryName);
-                                dataToSend.append('csrfmiddlewaretoken', csrf);
+                            var dataToSend = new FormData();
+                            dataToSend.append('csrfmiddlewaretoken', csrf);
+                            dataToSend.append('optionCategoryNameArr', productOptionsCategory);
 
-                                var getOptionCategoryReq = new XMLHttpRequest();
-                                getOptionCategoryReq.onreadystatechange = function() {
-                                    if (this.readyState == 4) {
-                                        console.log(getOptionCategoryReq.response);
-                                        wait(1000);
+                            var getOptionCategoryReq = new XMLHttpRequest();
+                            getOptionCategoryReq.onreadystatechange = function() {
+                                if (this.readyState == 4) {
+                                    response = getOptionCategoryReq.response;
+                                    var optionRawArr = response.split("][");
+
+                                    optionRawArr.forEach(function (optionData) {
+                                        optionArr = optionData.replaceAll("[", "").replaceAll("]", "").replaceAll("}, {", "}; {").split(";");
+
+                                        optionArr.forEach(function (option) {
+                                            optionJson = JSON.parse(option);
+                                            categoryName = optionJson.category.name;
+                                            optionName = optionJson.name;
+
+                                            if (categoryName in optionCategoryMap) {
+                                                optionCategoryMap[categoryName].push(optionName);
+                                            } else {
+                                                optionCategoryMap[categoryName] = [];
+                                                optionCategoryMap[categoryName].push(optionName);
+                                            }
+                                        });
+                                    });
+
+                                    for (categoryName in optionCategoryMap) {
+                                        if (optionCategoryMap.hasOwnProperty(categoryName)) {
+
+                                            optionData = [];
+
+                                            optionCategoryMap[categoryName].forEach(function(option) {
+                                                optionData.push({"text" : option, "value" : option});
+                                            });
+
+                                            bootbox.prompt({
+                                                title: categoryName,
+                                                inputType: 'checkbox',
+                                                inputOptions: optionData,
+                                                callback: function (result) {
+                                                    if (result != null) {
+                                                        if (result.length > 1) {
+                                                            alert("You can only select one option");
+                                                            return false;
+                                                        } else {
+                                                            //send request to server to save the options
+                                                            selectedOptionsToAdd += result[0]+", ";
+                                                        }
+                                                    }
+                                                }
+                                            });
+                                        }
                                     }
-                                };
-                                getOptionCategoryReq.open("POST", "/getOptions/", true);
-                                getOptionCategoryReq.send(dataToSend);
-
-                            }
+                                }
+                            };
+                            getOptionCategoryReq.open("POST", "/getOptions/", true);
+                            getOptionCategoryReq.send(dataToSend);
                         }
                     };
                     optionRequest.open("POST", "/getCategoryOptions/", true);
@@ -276,11 +318,14 @@
                                                     dataToPost = {
                                                         'product_id': productId + ":" + productSubname + ":" + productPrice + ":" + productData[3] + extraToAdd,
                                                         'extras_id': extraToAdd,
-                                                        'csrfmiddlewaretoken': csrf
+                                                        'csrfmiddlewaretoken': csrf,
+                                                        'selectedOptions' : selectedOptionsToAdd
                                                     };
                                                 } else {
                                                     dataToPost = {
-                                                        'product_id': productId + ":" + productSubname + ":" + productPrice + ":" + productData[3] + extraToAdd, 'csrfmiddlewaretoken': csrf
+                                                        'product_id': productId + ":" + productSubname + ":" + productPrice + ":" + productData[3] + extraToAdd,
+                                                        'csrfmiddlewaretoken': csrf,
+                                                        'selectedOption' : selectedOptionsToAdd
                                                     };
                                                 }
 

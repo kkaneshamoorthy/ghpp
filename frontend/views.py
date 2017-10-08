@@ -93,6 +93,7 @@ def product(request, id):
 def add_product(request):
     if (request.method == 'POST'):
         product_id = request.POST.get("product_id")
+        selectedOption = request.POST.get("selectedOption")
 
         extraArr = []
         quantity = 1
@@ -107,7 +108,7 @@ def add_product(request):
         if product_id in basket:
             quantity = basket[product_id]["quantity"]+1
 
-        basket[product_id] = {"extras" : extraArr, "quantity" : quantity}
+        basket[product_id] = {"extras" : extraArr, "quantity" : quantity, "selectedOption" : selectedOption}
 
         request.session['basket'] = basket
         return HttpResponse("product added")
@@ -133,6 +134,7 @@ def basket(request):
         product_price = productData[2]
         extraIds = value['extras']
         quantity = value['quantity']
+        selectedOption = value['selectedOption']
         extraTotal = 0
         extraData = []
         product = Product.objects.get(id=product_id) #get product
@@ -154,7 +156,7 @@ def basket(request):
 
         price = float(product.price)
         productTotal = price + extraTotal+float(product_price)
-        products.append({'product': product, 'product_subname' : product_subname, 'price':productTotal, 'extras' : extraData, 'product_id' : key, 'quantity' : quantity})
+        products.append({'product': product, 'product_subname' : product_subname, 'price':productTotal, 'extras' : extraData, 'product_id' : key, 'quantity' : quantity, 'selectedOption' : selectedOption})
         total += productTotal * quantity
 
         total = round(total, 3)
@@ -230,6 +232,7 @@ def checkout_delivery(request):
         product_price = productData[2]
         extraIds = value['extras']
         quantity = value['quantity']
+        selectedOption = value['selectedOption']
         extraTotal = 0
         extraData = []
         product = Product.objects.get(id=product_id) #get product
@@ -246,7 +249,7 @@ def checkout_delivery(request):
 
         price = float(product.price)
         productTotal = price + extraTotal+float(product_price)
-        products.append({'product': product, 'product_subname' : product_subname, 'price':productTotal, 'extras' : extraData, 'product_id' : key, 'quantity' : quantity})
+        products.append({'product': product, 'product_subname' : product_subname, 'price':productTotal, 'extras' : extraData, 'product_id' : key, 'quantity' : quantity, 'selectedOption' : selectedOption})
         total += productTotal * quantity
 
     card_charge = UtilityData.objects.filter(name="card_charge")[0].info
@@ -259,7 +262,7 @@ def checkout_delivery(request):
 
     total = round(total, 2)
 
-    checkout = {'total' : total, 'product' : ordered_products}
+    checkout = {'total' : total, 'product' : ordered_products, "selectedOption" : selectedOption}
 
     request.session['checkout'] = checkout
     request.session['basket_total'] = total
@@ -363,7 +366,8 @@ def payment(request): #card payment
                 address = deliveryData['street']+", "+deliveryData['city']+", "+deliveryData['postcode'],
                 name = "Kowrishankar",
                 status = "Order Received",
-                comment = comment
+                comment = comment,
+                option = deliveryData['total']['selectedOption']
             )
             order.save()
 
@@ -385,6 +389,7 @@ def order(request): #cash payment
         email = request.session['account']['email']
         paymentData = checkout['payment']
         deliveryData = checkout['delivery']
+        # selectedOption = checkout['selectedOption']
         comment = checkout['comment']
         total = deliveryData['total']
 
@@ -404,7 +409,8 @@ def order(request): #cash payment
             status = "Order Received",
             email = email,
             date = datetime.datetime.now(),
-            comment = comment
+            comment = comment,
+            option = deliveryData['total']['selectedOption']
         )
         order.save()
 
@@ -623,11 +629,14 @@ def getCategoryOptions(request):
 
 def getOptions(request):
     if (request.method == 'POST'):
-        optionCategoryName = request.POST.get('optionCategoryName')
+        optionCategoryName = request.POST.get('optionCategoryNameArr').split(",")
 
-        categoryObj = OptionCategory.objects.filter(name=optionCategoryName)
-        optionObj = Options.objects.filter(category=categoryObj)
-        optionSerializer = OptionsSerializer(optionObj, many=True)
+        context = ""
+        for category in optionCategoryName:
+            categoryObj = OptionCategory.objects.filter(name=category)
+            optionObj = Options.objects.filter(category=categoryObj)
+            optionSerializer = OptionsSerializer(optionObj, many=True)
+            context += json.dumps(optionSerializer.data)
 
-        return HttpResponse(json.dumps(optionSerializer.data))
+        return HttpResponse(context)
     raise Http404

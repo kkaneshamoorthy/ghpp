@@ -124,6 +124,7 @@
                             <td>Total</td>
                             <td>Status</td>
                             <td>Comment</td>
+                            <td>Option</td>
                             <td>Date/Time</td>
                         </tr>
                         {% for order in orders %}
@@ -137,6 +138,7 @@
                                 <td> {{ order.total }} </td>
                                 <td> {{ order.status }} </td>
                                 <td> {{ order.comment }} </td>
+                                <td> {{ order.option }} </td>
                                 <td class="datetime"> {{ order.date }} </td>
                                 <td> <a class="editOrder"  id="{{ order.id }}"> <span class="glyphicon glyphicon-pencil"/> </a></td>
                             </tr>
