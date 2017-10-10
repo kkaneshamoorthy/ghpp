@@ -64,3 +64,4 @@ class Options(models.Model):
 class ProductOption(models.Model):
     product = models.ForeignKey(Product)
     optionCategory = models.ForeignKey(OptionCategory)
+    maxNumOptions = models.CharField(max_length=6)

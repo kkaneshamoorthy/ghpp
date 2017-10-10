@@ -175,6 +175,7 @@
                     var productPrice = productData[2];
                     var productOptionsCategory = [];
                     var optionCategoryMap = {};
+                    var optionCategoryMaxNumOptionMap = {};
                     var selectedOptionsToAdd = "";
 
                     var data = new FormData();
@@ -190,6 +191,16 @@
                                 var option = productOptionJson[t];
                                 var optionCategoryName = option.optionCategory.name;
                                 productOptionsCategory.push(optionCategoryName);
+
+                                var maxNumOptions = Number(option.maxNumOptions);
+                                console.log(maxNumOptions + " " + optionCategoryName);
+
+                                if (optionCategoryName in optionCategoryMaxNumOptionMap) {
+                                    optionCategoryMaxNumOptionMap[optionCategoryName].push(maxNumOptions);
+                                } else {
+                                    optionCategoryMaxNumOptionMap[optionCategoryName] = [];
+                                    optionCategoryMaxNumOptionMap[optionCategoryName].push(maxNumOptions);
+                                }
                             }
 
                             var dataToSend = new FormData();
@@ -221,11 +232,10 @@
 
                                     for (categoryName in optionCategoryMap) {
                                         if (optionCategoryMap.hasOwnProperty(categoryName)) {
-
                                             optionData = [];
 
                                             optionCategoryMap[categoryName].forEach(function(option) {
-                                                optionData.push({"text" : option, "value" : option});
+                                                optionData.push({"text" : option, "value" : option+"::"+categoryName});
                                             });
 
                                             bootbox.prompt({
@@ -233,13 +243,14 @@
                                                 inputType: 'checkbox',
                                                 inputOptions: optionData,
                                                 callback: function (result) {
-                                                    if (result != null) {
-                                                        if (result.length > 1) {
-                                                            alert("You can only select one option");
+                                                    if (result != null && result.length > 0) {
+                                                        console.log(result);
+                                                        categoryName = result[0].split("::")[1];
+                                                        if (result.length > optionCategoryMaxNumOptionMap[categoryName]) {
+                                                            alert("You can only select "+  optionCategoryMaxNumOptionMap[categoryName] +" option");
                                                             return false;
                                                         } else {
-                                                            //send request to server to save the options
-                                                            selectedOptionsToAdd += result[0]+", ";
+                                                            selectedOptionsToAdd += result.toString().replaceAll("::"+categoryName, "")+", ";
                                                         }
                                                     }
                                                 }
@@ -303,27 +314,27 @@
                                                         extraToAdd += ",";
                                                 }
 
-                                                if (selectedOptions > requiredSelection) { //selecting more toppings
+                                                if (selectedOptions == 0 && requiredSelection > 0) {
                                                     bootbox.alert({
-                                                        message: "You have selected more than "+ requiredSelection + " toppings. You will be charged for the extra topics.",
-                                                    });
-                                                } else if (selectedOptions == 0 && requiredSelection > 0) {
-                                                    bootbox.alert({
-                                                        message: "You have total of  "+ requiredSelection + " toppings to choose. You have chosen 0 toppings. Product is not added to the basket. Please choose a topping",
+                                                        message: "You have total of  "+ requiredSelection + " toppings to choose. You have chosen 0 toppings. Product is not added to the basket. Please choose a topping"
                                                     });
                                                     return;
                                                 }
 
+                                                var dataToPost = {};
+
                                                 if (selectedOptions != 0) {
+                                                    console.log("selected option != 0");
                                                     dataToPost = {
-                                                        'product_id': productId + ":" + productSubname + ":" + productPrice + ":" + productData[3] + extraToAdd,
+                                                        'product_id': productId + ":" + productSubname + ":" + productPrice + ":" + productData[3] + extraToAdd + selectedOptionsToAdd,
                                                         'extras_id': extraToAdd,
                                                         'csrfmiddlewaretoken': csrf,
-                                                        'selectedOptions' : selectedOptionsToAdd
+                                                        'selectedOption' : selectedOptionsToAdd
                                                     };
                                                 } else {
+                                                    console.log("selected option is not != 0");
                                                     dataToPost = {
-                                                        'product_id': productId + ":" + productSubname + ":" + productPrice + ":" + productData[3] + extraToAdd,
+                                                        'product_id': productId + ":" + productSubname + ":" + productPrice + ":" + productData[3] + extraToAdd + selectedOptionsToAdd,
                                                         'csrfmiddlewaretoken': csrf,
                                                         'selectedOption' : selectedOptionsToAdd
                                                     };
@@ -334,11 +345,14 @@
                                                     type: 'POST',
                                                     data: dataToPost,
                                                     success: function (result) {
-                                                        console.log("added successfully");
+                                                        console.log("added successfully:"+result);
                                                         bootbox.alert({
                                                             message: "Product added to the Basket",
                                                             backdrop: true
                                                         });
+                                                    },
+                                                    error: function (xmlHttpRequest, textStatus, errorThrown) {
+                                                         alert(errorThrown);
                                                     }
                                                 });
                                             }

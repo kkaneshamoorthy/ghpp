@@ -69,3 +69,4 @@ class OptionsSerializer(serializers.Serializer):
 class ProductOptionSerializer(serializers.Serializer):
     product = ProductSerializer()
     optionCategory = OptionCategorySerializer()
+    maxNumOptions = serializers.CharField()

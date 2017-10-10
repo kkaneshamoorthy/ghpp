@@ -34,6 +34,7 @@ from rest_framework.parsers import JSONParser
 def index(request):
     if 'basket' not in request.session:
         request.session['basket'] = {}
+        # request.session['basket']['totalItem'] = 0
 
     return render(request, 'website/index.html')
 
@@ -109,9 +110,10 @@ def add_product(request):
             quantity = basket[product_id]["quantity"]+1
 
         basket[product_id] = {"extras" : extraArr, "quantity" : quantity, "selectedOption" : selectedOption}
+        # basket["totalItem"] = basket['totalItem']+1
 
         request.session['basket'] = basket
-        return HttpResponse("product added")
+        return HttpResponse("product added:"+selectedOption)
     raise Http404
 
 
@@ -120,12 +122,21 @@ def reset_basket(request):
     return HttpResponse("basket resetted")
 
 def view_basket(request):
-    return HttpResponse(json.dumps(request.session['basket']))
+    if 'basket' in request.session:
+        basket = request.session['basket']
+    else:
+        basket = {}
+
+    return HttpResponse(json.dumps(basket))
 
 def basket(request):
     products = []
     total = 0
-    basket = request.session['basket']
+
+    if 'basket' in request.session:
+        basket = request.session['basket']
+    else:
+        basket = {}
 
     for key,value in basket.items():
         productData = key.split(":")
