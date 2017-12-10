@@ -1,0 +1,390 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="">
+        <meta name="author" content="">
+
+        <title>Our Menu</title>
+
+        <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}"/>
+        <link rel="stylesheet" href="{% static 'css/scrolling-nav.css' %}" />
+        <link rel="stylesheet" href="{% static 'css/main.css' %}"/>
+        <link rel="stylesheet" href="{% static 'css/hover-min.css' %}">
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+        <script type="text/javascript" src="resources/js/script.js"></script>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+        <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+    </head>
+
+    <body id="page-top" data-spy="scroll" data-target=".navbar-fixed-top">
+        {% csrf_token %}
+        <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+            <div class="container">
+                <div class="navbar-header page-scroll">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand page-scroll" href="/">Galley Hill Peri Peri</a>
+                </div>
+
+                <div class="collapse navbar-collapse navbar-ex1-collapse">
+                    <ul class="nav navbar-nav">
+                        <li class="hidden">
+                            <a class="page-scroll" href="/"></a>
+                        </li>
+                        <li>
+                            <a class="page-scroll" href="/menu">Menu</a>
+                        </li>
+                        <li>
+                            <a class="basket" href="/basket"> My Basket <span class="glyphicon glyphicon-shopping-cart"/> </a>
+                        </li>
+                        <li>
+                            <a class="page-scroll" href="/account"> My Account <span class="glyphicon glyphicon glyphicon-user" /> </a>
+                        </li>
+                        {% if request.session.account is not None %}
+                        <li>
+                            <a class="page-scroll" href="/logout"> Logout <span class="glyphicon glyphicon-log-out" /> </a>
+                        </li>
+                        {% endif %}
+                    </ul>
+
+                    <form class="navbar-form navbar-right" role="search">
+                        {% csrf_token %}
+                      <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search">
+                      </div>
+                      <button type="submit" class="btn btn-default">Search</button>
+                    </form>
+                </div>
+            </div>
+        </nav>
+
+         <div id="blur-box">
+            <div id="menu-content">
+                <div class="row">
+                    <br />
+                    <br />
+
+                    <div id="menuBar" class="col-lg-3">
+                        <ul class="nav nav-pills navbar-flow nav-stacked navbar-left">
+        {#                      <li role="presentation" class="active"><a href="#alochol">Alochol</a></li>#}
+                            {% for category in category_list %}
+                                <li role="presentation"><a href="#{{ category.sub_name }}"> {{ category.name }} </a></li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+
+                    <div id="menu_list" class="col-lg-9" style="color: black;">
+                         <script>
+                             var output = "";
+                             {% for data in products %}
+                                 {% for category in data %} //category
+                                     output += "<h1 id='{{ category.sub_name }}'> {{ category.name }} </h1>";
+                                     output += "<h5> {{ category.description }} </h5>";
+                                     output += "<div class='panel panel-default' style='background-color: transparent'>";
+                                     output += "<div class='panel-body' align='left'>";
+
+                                     output += "<span style='color : black;'>";
+
+                                     {% for key,value in data.items %} //product
+                                         {% for product in value %}
+                                            output += "<span class='product-name'>{{ product.name }} </span><br>";
+                                             {% if product.description != "NULL" %}
+                                                output += "{{ product.description }}<br>";
+                                             {% endif %}
+                                            output += "<table class='table'> <tr>";
+
+                                            var portion = "{{ product.size }}".split(";");
+                                            for (var j=0; j<portion.length; j++) {
+                                                var sizeData = portion[j].split(":");
+                                                var addButtonID = {{ product.id }}+":"+sizeData[0]+":"+sizeData[1];
+
+                                                output += "<td>" + sizeData[0 ] + "</td>";
+                                                output += "<td>£"+ sizeData[1] + "</td>";
+                                                output += "<td> <a id='"+addButtonID+"' class='hvr-grow btn-add-basket'> Add to Basket <span class='glyphicon glyphicon-plus-sign' aria-hidden='true'></span> </a> </td> </tr>";
+                                            }
+
+                                            output+="</table>";
+                                         {% endfor %}
+                                     {% endfor %}
+                                     output += " </span> </div> </div>";
+                                 {% endfor %}
+                             {% endfor %}
+
+                             var panel = document.getElementById("menu_list");
+                             panel.innerHTML = panel.innerHTML + output;
+                        </script>
+                    </div>
+                </div>
+            </div>
+         </div>
+
+      <!-- jQuery -->
+    {#    <script src="{% static '/js/jquery.js' %} "></script>#}
+        <script src="{% static 'js/jquery-3.1.1.min.js' %} "></script>
+        <script src="{% static 'js/jquery-ui.min.js' %} "></script>
+
+        <!-- Bootstrap Core JavaScript -->
+        <script src={% static 'js/bootstrap.min.js' %}></script>
+
+        <!-- Scrolling Nav JavaScript -->
+    {#    <script src="resources/js/jquery.easing.min.js"></script>#}
+        <script src="{% static 'js/scrolling-nav.js' %}"></script>
+        <script src="{% static 'js/slippry.min.js' %}"></script>
+        <script src="{% static 'js/bootbox.min.js' %}"></script>
+        <script src="{% static 'js/DBAPI.js' %}"></script>
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+        <script type='text/javascript' src="codex-fly.js"></script>
+
+        <script>
+            var csrf = $('[name="csrfmiddlewaretoken"]').val();
+
+            String.prototype.replaceAll = function(search, replacement) {
+                var target = this;
+                return target.split(search).join(replacement);
+            };
+
+             function wait(ms){
+               var start = new Date().getTime();
+               var end = start;
+               while(end < start + ms) {
+                 end = new Date().getTime();
+              }
+            }
+
+            var addToBasket = function(){
+                var extraToAdd = [];
+                $(".btn-add-basket").click(function () {
+                    var productToAdd = this.id;
+
+                    var productData = productToAdd.split(":");
+                    var productId = productData[0];
+                    var productSubname = productData[1];
+                    var productPrice = productData[2];
+                    var productOptionsCategory = [];
+                    var optionCategoryMap = {};
+                    var optionCategoryMaxNumOptionMap = {};
+                    var selectedOptionsToAdd = "";
+
+                    var data = new FormData();
+                    data.append('productId', productId);
+                    data.append('csrfmiddlewaretoken', csrf);
+
+                    var optionRequest = new XMLHttpRequest();
+                    optionRequest.onreadystatechange = function() {
+                        if (this.readyState == 4) {
+                            var productOptionJson = JSON.parse(optionRequest.response);
+
+                            for (var t=0; t<productOptionJson.length; t++) {
+                                var option = productOptionJson[t];
+                                var optionCategoryName = option.optionCategory.name;
+                                productOptionsCategory.push(optionCategoryName);
+
+                                var maxNumOptions = Number(option.maxNumOptions);
+                                console.log(maxNumOptions + " " + optionCategoryName);
+
+                                if (optionCategoryName in optionCategoryMaxNumOptionMap) {
+                                    optionCategoryMaxNumOptionMap[optionCategoryName].push(maxNumOptions);
+                                } else {
+                                    optionCategoryMaxNumOptionMap[optionCategoryName] = [];
+                                    optionCategoryMaxNumOptionMap[optionCategoryName].push(maxNumOptions);
+                                }
+                            }
+
+                            var dataToSend = new FormData();
+                            dataToSend.append('csrfmiddlewaretoken', csrf);
+                            dataToSend.append('optionCategoryNameArr', productOptionsCategory);
+
+                            var getOptionCategoryReq = new XMLHttpRequest();
+                            getOptionCategoryReq.onreadystatechange = function() {
+                                if (this.readyState == 4) {
+                                    response = getOptionCategoryReq.response;
+                                    var optionRawArr = response.split("][");
+
+                                    optionRawArr.forEach(function (optionData) {
+                                        optionArr = optionData.replaceAll("[", "").replaceAll("]", "").replaceAll("}, {", "}; {").split(";");
+
+                                        optionArr.forEach(function (option) {
+                                            optionJson = JSON.parse(option);
+                                            categoryName = optionJson.category.name;
+                                            optionName = optionJson.name;
+
+                                            if (categoryName in optionCategoryMap) {
+                                                optionCategoryMap[categoryName].push(optionName);
+                                            } else {
+                                                optionCategoryMap[categoryName] = [];
+                                                optionCategoryMap[categoryName].push(optionName);
+                                            }
+                                        });
+                                    });
+
+                                    for (categoryName in optionCategoryMap) {
+                                        if (optionCategoryMap.hasOwnProperty(categoryName)) {
+                                            optionData = [];
+
+                                            optionCategoryMap[categoryName].forEach(function(option) {
+                                                optionData.push({"text" : option, "value" : option+"::"+categoryName});
+                                            });
+
+                                            bootbox.prompt({
+                                                title: categoryName,
+                                                inputType: 'checkbox',
+                                                inputOptions: optionData,
+                                                callback: function (result) {
+                                                    if (result != null && result.length > 0) {
+                                                        console.log(result);
+                                                        categoryName = result[0].split("::")[1];
+                                                        if (result.length > optionCategoryMaxNumOptionMap[categoryName]) {
+                                                            alert("You can only select "+  optionCategoryMaxNumOptionMap[categoryName] +" option");
+                                                            return false;
+                                                        } else {
+                                                            selectedOptionsToAdd += result.toString().replaceAll("::"+categoryName, "")+", ";
+                                                        }
+                                                    }
+                                                }
+                                            });
+                                        }
+                                    }
+                                }
+                            };
+                            getOptionCategoryReq.open("POST", "/getOptions/", true);
+                            getOptionCategoryReq.send(dataToSend);
+                        }
+                    };
+                    optionRequest.open("POST", "/getCategoryOptions/", true);
+                    optionRequest.send(data);
+
+                    dataOut = [];
+                    var requiredSelection = 0;
+
+                    if (productId == "14") {
+                        requiredSelection = 3;
+                    }
+
+                    var request = new XMLHttpRequest();
+                    request.onreadystatechange = function() {
+
+                        if (this.readyState == 4) {
+                            console.log(request.response);
+                            var data = request.response.replaceAll("][", ",");
+
+                            //Get extra options from DB
+                            if (request.response != "") {
+                                jsonData = JSON.parse(data);
+                                for (var i = 0; i < jsonData.length; i++) {
+                                    var extraData = jsonData[i];
+                                    id = extraData.id;
+                                    extra_name = extraData.name;
+                                    extra_price = extraData.price;
+
+                                    dataOut.push({"text" : extra_name+" - £" + extra_price, "value" : id});
+                                }
+
+                                if (requiredSelection > 0) {
+                                    dialogTitle = "Select " + requiredSelection + " topics:";
+                                } else {
+                                    dialogTitle = "Extra Options";
+                                }
+
+                                //display extra options
+                                if (dataOut.length > 0) {
+                                    bootbox.prompt({
+                                        title: dialogTitle,
+                                        inputType: 'checkbox',
+                                        inputOptions: dataOut,
+                                        callback: function (result) {
+                                            if (result != null) {
+                                                var extraToAdd = "";
+                                                var selectedOptions = 0;
+                                                for (selectedOptions = 0; selectedOptions < result.length; selectedOptions++) {
+                                                    extraToAdd += result[selectedOptions];
+                                                    if (selectedOptions != result.length - 1)
+                                                        extraToAdd += ",";
+                                                }
+
+                                                if (selectedOptions == 0 && requiredSelection > 0) {
+                                                    bootbox.alert({
+                                                        message: "You have total of  "+ requiredSelection + " toppings to choose. You have chosen 0 toppings. Product is not added to the basket. Please choose a topping"
+                                                    });
+                                                    return;
+                                                }
+
+                                                var dataToPost = {};
+
+                                                if (selectedOptions != 0) {
+                                                    console.log("selected option != 0");
+                                                    dataToPost = {
+                                                        'product_id': productId + ":" + productSubname + ":" + productPrice + ":" + productData[3] + extraToAdd + selectedOptionsToAdd,
+                                                        'extras_id': extraToAdd,
+                                                        'csrfmiddlewaretoken': csrf,
+                                                        'selectedOption' : selectedOptionsToAdd
+                                                    };
+                                                } else {
+                                                    console.log("selected option is not != 0");
+                                                    dataToPost = {
+                                                        'product_id': productId + ":" + productSubname + ":" + productPrice + ":" + productData[3] + extraToAdd + selectedOptionsToAdd,
+                                                        'csrfmiddlewaretoken': csrf,
+                                                        'selectedOption' : selectedOptionsToAdd
+                                                    };
+                                                }
+
+                                                $.ajax({
+                                                    url: "/addproduct/",
+                                                    type: 'POST',
+                                                    data: dataToPost,
+                                                    success: function (result) {
+                                                        console.log("added successfully:"+result);
+                                                        bootbox.alert({
+                                                            message: "Product added to the Basket",
+                                                            backdrop: true
+                                                        });
+                                                    },
+                                                    error: function (xmlHttpRequest, textStatus, errorThrown) {
+                                                         alert(errorThrown);
+                                                    }
+                                                });
+                                            }
+                                        }
+                                    });
+                                }
+                            } else {
+                                console.log("HELLO");
+                                $.ajax({
+                                    url: "/addproduct/",
+                                    type: 'POST',
+                                    data: {
+                                        'product_id': productId + ":" + productSubname + ":" + productPrice + ":" + productData[3],
+                                        'csrfmiddlewaretoken': csrf
+                                    },
+                                    success: function (result) {
+                                        console.log("added successfully");
+                                            bootbox.alert({
+                                                message: "The product has been added to the basket",
+                                                backdrop: true
+                                            });
+                                    }
+                                });
+                            }
+                        }
+                    };
+                    request.open("GET", "/productExtra/"+productId+"/", true);
+                    request.send();
+                 });
+            };
+            setTimeout(addToBasket, 1000);
+        </script>
+    </body>
+
+</html>
